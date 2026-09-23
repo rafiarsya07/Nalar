@@ -1,3 +1,7 @@
 node_modules/
 data.json
 .env
+server/data/
+backup/
+Claude outputs/
+rtl8188eus/

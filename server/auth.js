@@ -43,3 +43,17 @@ export function requireAuth(req, res, next) {
     res.status(401).json({ error: "Session expired or invalid" });
   }
 }
+
+// Boolean form of the same check, for endpoints that serve BOTH the public and
+// the admin (e.g. deleting a comment: admins delete any, authors delete their
+// own via token). Returns true if a valid admin session cookie is present.
+export function isAuthed(req) {
+  const token = req.cookies?.token;
+  if (!token) return false;
+  try {
+    jwt.verify(token, JWT_SECRET);
+    return true;
+  } catch {
+    return false;
+  }
+}

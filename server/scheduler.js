@@ -8,7 +8,9 @@
 // once per app instance.)
 // ---------------------------------------------------------------------------
 
-import { publishDuePosts } from "./db.js";
+import { publishDuePosts, getSubscriberEmails, getPostById, markNotified } from "./db.js";
+import { notifyNewPost } from "./mailer.js";
+import { invalidate } from "./cache.js";
 
 const INTERVAL_MS = 60 * 1000; // check every minute
 
@@ -16,8 +18,19 @@ async function tick() {
   try {
     const published = await publishDuePosts();
     if (published.length > 0) {
+      invalidate("posts:");
       for (const p of published) {
         console.log(`[scheduler] published "${p.title}" (/${p.slug})`);
+        // Email subscribers once, the first time this post goes live.
+        if (!p.notified) {
+          await markNotified(p.id);
+          try {
+            const [emails, full] = await Promise.all([getSubscriberEmails(), getPostById(p.id)]);
+            await notifyNewPost(full || p, emails);
+          } catch (e) {
+            console.warn("[scheduler] notify failed:", e.message);
+          }
+        }
       }
     }
   } catch (err) {

@@ -33,12 +33,13 @@ export function buildRssFeed(posts, origin) {
     .join("\n");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/rss.xsl"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>ThoughtLog — Rafi Arsya</title>
+    <title>Nalar</title>
     <link>${escapeXml(origin)}</link>
     <atom:link href="${escapeXml(origin)}/rss.xml" rel="self" type="application/rss+xml" />
-    <description>Notes on what I build and why.</description>
+    <description>Thinking out loud about software, by Rafi Arsya.</description>
     <language>en</language>
 ${items}
   </channel>
