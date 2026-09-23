@@ -1,9 +1,14 @@
 # Nalar
 
-Formerly ThoughtLog. Same engine, new name and a front end rebuilt around a
-Medium style reading experience: one narrow column, Poppins for headings and
-UI (matching rafiarsya.com), Source Serif 4 at 21px for the body, and three
-reading themes.
+Formerly ThoughtLog, same engine under a new name, with a front end rebuilt
+around a Medium style reading experience: one narrow column, Poppins for
+headings and UI (matching rafiarsya.com), Source Serif 4 at 21px for the
+body, and three reading themes.
+
+A full-stack personal blog with a built-from-scratch CMS, no off-the-shelf
+platform. Write in Markdown with live preview, save drafts, schedule posts
+to publish automatically, edit anytime, and browse by tag. Reading is
+public; writing is behind authentication.
 
 What landed in the September 2026 rebuild:
 
@@ -21,45 +26,36 @@ What landed in the September 2026 rebuild:
   tags, stale drafts, anything publishing this week, each one a filter for the
   post list), publishing cadence for the last eight months, and the sponsor
   editor with a live preview.
-- **Book mode rebuilt** as a two page spread drawn in CSS instead of a
-  photograph, so the type is readable on a monitor.
-
-# ThoughtLog
-
-A full-stack personal blog with a built-from-scratch CMS — no off-the-shelf
-platform. Write in Markdown with live preview, save drafts, schedule posts to
-publish automatically, edit anytime, and browse by tag. Reading is public;
-writing is behind authentication.
 
 ## Features
 
-- **Markdown editor with live preview** — rendered output side-by-side as you type
-- **Formatting toolbar + shortcuts** — bold/italic/heading/link/quote/code/list buttons, plus Ctrl/Cmd+B/I/K
-- **Local autosave + word count** — drafts are saved to the browser as you write, with a restore prompt if you come back; live word/character count and reading-time estimate
-- **Three publish modes** — publish now, save as draft, or **schedule** for a future date
-- **Scheduled publishing** — a background job flips scheduled posts live when their time comes
-- **Full edit flow** — open any post, change content or status, re-publish
-- **Admin dashboard** — counts for total / published / scheduled / drafts, total views, comments and subscribers; **filter by status, search, and bulk publish / draft / delete**
-- **Reader comfort** — a floating Reading panel (font size, column width, serif/sans, light/dark), table of contents, reading-progress bar, and back-to-top
-- **Rich article rendering** — copy-to-clipboard code blocks with syntax highlighting, click-to-zoom image lightbox, GitHub-style callouts (`> [!note]` / `[!tip]` / `[!warn]`), and footnotes (`text[^1]` … `[^1]: …`)
-- **Tags** — tag cloud on the home page, click any tag to filter
-- **Related posts** — shown under each article based on shared tags
-- **Reactions, ratings & comments** — emoji reactions and star ratings (no login), threaded reader comments
-- **Cover images**, **full-text search**, **per-post view tracking**, **RSS feed**, **email subscriptions**
+- **Markdown editor with live preview**, rendered output side by side as you type
+- **Formatting toolbar and shortcuts**: bold, italic, heading, link, quote, code, list buttons, plus Ctrl/Cmd+B/I/K
+- **Local autosave and word count**: drafts are saved to the browser as you write, with a restore prompt if you come back; live word/character count and reading time estimate
+- **Three publish modes**: publish now, save as draft, or **schedule** for a future date
+- **Scheduled publishing**: a background job flips scheduled posts live when their time comes
+- **Full edit flow**: open any post, change content or status, republish
+- **Admin dashboard**: counts for total, published, scheduled, drafts, total views, comments and subscribers; **filter by status, search, and bulk publish, draft, or delete**
+- **Reader comfort**: a floating Reading panel (font size, column width, serif/sans, light/dark), table of contents, reading progress bar, and back to top
+- **Rich article rendering**: copy to clipboard code blocks with syntax highlighting, click to zoom image lightbox, GitHub style callouts (`> [!note]` / `[!tip]` / `[!warn]`), and footnotes (`text[^1]` … `[^1]: …`)
+- **Tags**: tag cloud on the home page, click any tag to filter
+- **Related posts**: shown under each article based on shared tags
+- **Reactions, ratings and comments**: emoji reactions and star ratings (no login), threaded reader comments
+- **Cover images**, **full text search**, **per post view tracking**, **RSS feed**, **email subscriptions**
 
 ## What it demonstrates
 
-- **REST API design** — clean split of public reads vs. authenticated writes
-- **Authentication** — bcrypt password hashing, signed JWT in an httpOnly cookie, server-side route guards
-- **PostgreSQL** — real schema, parameterized queries, a generated `tsvector` column + GIN index for search, an atomic view counter, array columns for tags
-- **A post status state machine** — draft → scheduled → published
-- **Background jobs** — an in-process scheduler that publishes due posts every minute
-- **A clean data-access layer** — all SQL lives in `server/db.js`
+- **REST API design**: a clean split of public reads and authenticated writes
+- **Authentication**: bcrypt password hashing, a signed JWT in an httpOnly cookie, server side route guards
+- **PostgreSQL**: a real schema, parameterized queries, a generated `tsvector` column plus a GIN index for search, an atomic view counter, array columns for tags
+- **A post status state machine**: draft, then scheduled, then published
+- **Background jobs**: an in-process scheduler that publishes due posts every minute
+- **A clean data access layer**: all SQL lives in `server/db.js`
 
 ## Stack
 
-Node.js + Express · PostgreSQL (`pg`) · bcryptjs + jsonwebtoken · marked ·
-vanilla-JS single-page front-end (no framework, no build step) · dotenv.
+Node.js and Express, PostgreSQL (`pg`), bcryptjs and jsonwebtoken, marked, a
+vanilla JS single page front end (no framework, no build step), and dotenv.
 
 ## Run it locally
 
@@ -78,8 +74,8 @@ npm run seed                # admin user + sample posts
 npm start                   # http://localhost:3000
 ```
 
-Sign in at `/login` with the `ADMIN_USER` / `ADMIN_PASS` from your `.env`.
-Reading the blog needs no login — that's only for writing.
+Sign in at `/login` with the `ADMIN_USER` and `ADMIN_PASS` from your `.env`.
+Reading the blog needs no login, that's only for writing.
 
 ## Project layout
 
@@ -98,16 +94,16 @@ public/
 ## How scheduled publishing works
 
 When you schedule a post, it's saved with `status = 'scheduled'` and a
-`publish_at` timestamp, and stays hidden from readers. `scheduler.js` runs every
-minute and asks the database for any scheduled post whose time has passed, then
-flips it to `published`. It also runs once at startup to catch anything that
-came due while the server was off.
+`publish_at` timestamp, and stays hidden from readers. `scheduler.js` runs
+every minute and asks the database for any scheduled post whose time has
+passed, then flips it to `published`. It also runs once at startup to catch
+anything that came due while the server was off.
 
 ## Deploying (self-hosted)
 
-Runs anywhere Node + PostgreSQL run. On a mini PC: keep it alive with PM2
-(`pm2 start server/index.js --name thoughtlog`), and expose it with a Cloudflare
-Tunnel — no inbound ports opened.
+Runs anywhere Node and PostgreSQL run. On a mini PC: keep it alive with PM2
+(`pm2 start server/index.js --name thoughtlog`), and expose it with a
+Cloudflare Tunnel, no inbound ports opened.
 
 ## Front end: the reading room rebuild (Sep 2026)
 
@@ -136,42 +132,40 @@ Layout notes worth knowing before editing it:
 
 ## Security additions
 
-- **Security headers** (`server/index.js`) — Content Security Policy,
+- **Security headers** (`server/index.js`): Content Security Policy,
   `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`,
   `Permissions-Policy`, `Cross-Origin-Resource-Policy`, and HSTS over HTTPS.
   Scripts are limited to this origin plus cdnjs (highlight.js), styles to
   this origin plus Google Fonts, and frames to YouTube nocookie and CodePen,
   which are the only embeds the Markdown renderer can emit. Adding a new CDN
   or embed provider means editing the `CSP` array.
-- **Cookie hardening** — one middleware wraps `res.cookie` so every cookie
+- **Cookie hardening**: one middleware wraps `res.cookie` so every cookie
   the app sets gets `httpOnly`, `sameSite=lax`, `path=/` and, over HTTPS,
   `secure`.
-- **Search throttling** — the client enforces a 2 character minimum, a
+- **Search throttling**: the client enforces a 2 character minimum, a
   420ms debounce, an 80 character cap and a 12 requests per 10 seconds token
   bucket with a visible cooldown. The server backs that up with
   `searchLimiter` (40 requests per minute) and its own length cap on `q`.
 
 ## Performance & resilience additions
 
-- **In-process caching** (`server/cache.js`) — the published-posts listing,
-  tag cloud, and RSS feed are cached for 30–60s and invalidated on any write
-  (create/update/delete/pin/bulk actions, and the scheduler's auto-publish
-  tick). No Redis dependency — a single-instance blog doesn't need one, and
-  it's one less thing to break on a flaky disk.
-- **Rate limiting** (`server/rateLimit.js`, via `express-rate-limit`) —
+- **In-process caching** (`server/cache.js`): the published posts listing,
+  tag cloud, and RSS feed are cached for 30 to 60 seconds and invalidated on
+  any write (create/update/delete/pin/bulk actions, and the scheduler's
+  auto-publish tick). No Redis dependency, a single instance blog doesn't
+  need one, and it's one less thing to break on a flaky disk.
+- **Rate limiting** (`server/rateLimit.js`, via `express-rate-limit`):
   login attempts, anonymous comments/reactions/edits, and newsletter
-  subscriptions are throttled per-IP; a loose limiter also covers the rest
+  subscriptions are throttled per IP; a loose limiter also covers the rest
   of `/api` as a safety net against scraping.
-- **Per-post Open Graph / Twitter meta** — `GET /p/:slug` serves the SPA
+- **Per-post Open Graph / Twitter meta**: `GET /p/:slug` serves the SPA
   shell with that post's own title, excerpt, and cover image injected into
   `<head>`, so links shared on Discord/Twitter/WhatsApp show a real preview
-  instead of the site-wide default.
-- **Automated backups** (`deploy/backup.sh`) — dumps the database, gzips it,
+  instead of the site wide default.
+- **Automated backups** (`deploy/backup.sh`): dumps the database, gzips it,
   rotates local copies older than `KEEP_DAYS`, and (if `RCLONE_REMOTE` is
   set) pushes a copy off the mini PC. Meant to run daily via cron.
-- **CI/CD** — not set up yet. A `.github/workflows/ci.yml` that installs
-  deps and syntax-checks server files on every push (with an optional
+- **CI/CD**: not set up yet. A `.github/workflows/ci.yml` that installs
+  deps and syntax checks server files on every push (with an optional
   SSH-deploy step to the mini PC once `DEPLOY_*` secrets exist) is a
   reasonable next step, but isn't in this repo yet.
-
-# thoughtlog
