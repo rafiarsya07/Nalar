@@ -5,3 +5,5 @@ server/data/
 backup/
 Claude outputs/
 rtl8188eus/
+*.swp
+public/uploads/
