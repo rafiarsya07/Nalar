@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // cache.js — a tiny in-process TTL cache.
 //
-// ThoughtLog runs as a single instance on the mini PC, so there's no need
+// Nalar runs as a single instance on the mini PC, so there's no need
 // for Redis/Memcached — a Map with expiry timestamps does the job and adds
 // zero moving parts (and zero new things that can crash on a flaky NVMe).
 //
