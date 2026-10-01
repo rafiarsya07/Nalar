@@ -1918,6 +1918,14 @@
   .as-num{font-family:var(--font-display);font-style:italic;font-size:22px;color:var(--gold);line-height:1;margin-bottom:8px}
   .as-title{font-family:var(--font-display);font-size:19px;font-weight:600;margin-bottom:6px}
   .about-shelf p{font-size:14px;line-height:1.5;color:var(--ink-2);margin:0}
+  .about-quote{
+    margin:30px 0 32px;padding:26px 0 26px 26px;border-left:4px solid var(--gold);
+    font-family:var(--font-display);font-style:italic;font-weight:500;
+    font-size:clamp(24px,3.4vw,32px);line-height:1.25;letter-spacing:-.015em;color:var(--ink);text-wrap:balance;
+  }
+  .about-body-more>p:first-child::first-letter{all:unset}
+  .about-sign{font-family:var(--font-display);font-style:italic;color:var(--ink-2);margin-top:1.6em!important}
+  .about-sign span{display:inline-block;margin-top:4px;font-size:1.35em;font-weight:600;color:var(--ink)}
   .about-cta{margin:0 0 30px}
   .about-elsewhere{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;padding-top:18px;border-top:1px solid var(--rule)}
   .about-elsewhere .ae-label{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
@@ -3462,20 +3470,25 @@ function viewAbout(){
     <header class="about-head">
       <div class="eyebrow">About</div>
       <h1 class="about-title">I write to find out what I think.</h1>
-      <p class="about-lede">Hi, I'm Rafi. Nalar is where I think things through, in public and in writing.</p>
+      <p class="about-lede">Hi, I'm Rafi. Nalar is where unfinished thoughts come to grow up.</p>
     </header>
     <figure class="about-figure">
       <img src="/img/mood/mood-journal.jpg" alt="An open notebook on a desk" loading="lazy" decoding="async" onerror="this.parentNode.remove()"/>
     </figure>
     <div class="about-body">
-      <p>By day I study computer science at Universiti Malaya, a long way from home in Indonesia. I build things for the web, and I have noticed that most of what I really understand about them, I only understood after I had to write it down.</p>
-      <p><em>Nalar</em> is Indonesian for reason, the habit of thinking something all the way through. That is what this place is for. A half formed idea becomes a draft, the draft gets questioned, and whatever survives ends up here.</p>
-      <p>I would rather publish the honest version than the polished one. If something here is wrong, tell me. That is usually how the next post starts.</p>
+      <p>By day I study computer science at Universiti Malaya, a long way from home in Indonesia. I build things for the web, and somewhere along the way I learned that I do not really understand something until I have tried to write it down.</p>
+      <p><em>Nalar</em> is Indonesian for reason, the quiet work of thinking something all the way through. That is what this place is for. A half formed idea becomes a draft, the draft gets questioned, and whatever survives ends up here.</p>
+    </div>
+    <blockquote class="about-quote">A notebook is not a monument.<br/>It is a place to keep walking.</blockquote>
+    <div class="about-body about-body-more">
+      <p>So this is not a record of having arrived. It is a record of going: the bugs that humbled me, the projects that almost worked, the small lessons that only made sense in hindsight. If you are somewhere in the middle of your own climb, I hope something here keeps you company.</p>
+      <p>Start before you feel ready. Write it down before it makes sense. Ship the honest version, and let the next one be better. That is the whole method, and it has never once failed to teach me something.</p>
+      <p class="about-sign">Keep going,<br/><span>Rafi</span></p>
     </div>
     <section class="about-shelves" aria-label="What you will find here">
-      <div class="about-shelf"><div class="as-num">01</div><div class="as-title">Building</div><p>Notes from projects: the decisions, the bugs inside them, and what I would change.</p></div>
-      <div class="about-shelf"><div class="as-num">02</div><div class="as-title">Thinking</div><p>Essays that start as a question I could not answer yet.</p></div>
-      <div class="about-shelf"><div class="as-num">03</div><div class="as-title">Living</div><p>Studying abroad, working with people, and learning slowly.</p></div>
+      <div class="about-shelf"><div class="as-num">01</div><div class="as-title">Building</div><p>Notes from the workbench: what I made, what broke, and what it taught me.</p></div>
+      <div class="about-shelf"><div class="as-num">02</div><div class="as-title">Thinking</div><p>Essays that begin as questions, written before the answers arrive.</p></div>
+      <div class="about-shelf"><div class="as-num">03</div><div class="as-title">Living</div><p>Growing up far from home, one ordinary day at a time.</p></div>
     </section>
     <div class="about-cta">
       <button class="btn" onclick="go('/')">Start reading</button>
