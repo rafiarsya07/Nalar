@@ -1,9 +1,10 @@
 # Nalar
 
-Formerly ThoughtLog, same engine under a new name, with a front end rebuilt
-around a Medium style reading experience: one narrow column, Poppins for
-headings and UI (matching rafiarsya.com), Source Serif 4 at 21px for the
-body, and three reading themes.
+Writing to think. *Nalar* is Indonesian for reason, the habit of thinking
+something all the way through, and this is where Rafi Arsya does that in
+public. The front end reads like an editorial notebook: Fraunces headlines,
+Source Serif 4 at 21px for the body, small mono labels, warm paper, and a
+gold bar (the one from the logo) as the recurring mark. Three reading themes.
 
 A full-stack personal blog with a built-from-scratch CMS, no off-the-shelf
 platform. Write in Markdown with live preview, save drafts, schedule posts
@@ -66,8 +67,8 @@ npm install
 cp .env.example .env        # then edit with your DB details
 
 # create the database (once, in psql):
-#   CREATE USER thoughtlog WITH PASSWORD 'changeme';
-#   CREATE DATABASE thoughtlog OWNER thoughtlog;
+#   CREATE USER nalar WITH PASSWORD 'changeme';
+#   CREATE DATABASE nalar OWNER nalar;
 
 npm run init-db             # create / migrate tables
 npm run seed                # admin user + sample posts
@@ -99,26 +100,34 @@ every minute and asks the database for any scheduled post whose time has
 passed, then flips it to `published`. It also runs once at startup to catch
 anything that came due while the server was off.
 
-## Deploying (self-hosted)
+## Deploying
 
-Runs anywhere Node and PostgreSQL run. On a mini PC: keep it alive with PM2
-(`pm2 start server/index.js --name thoughtlog`), and expose it with a
-Cloudflare Tunnel, no inbound ports opened.
+Runs anywhere Node 20+ and PostgreSQL run. Keep it alive with PM2
+(`pm2 start server/index.js --name nalar`) and put it behind a reverse proxy
+or tunnel of your choice.
 
-## Front end: the reading room rebuild (Sep 2026)
+## Front end: the editorial redesign (Oct 2026)
 
-`public/index.html` was rebuilt around a library reading experience. Warm
-paper background, serif reading column, hairline rules, and three reading
-themes (paper, sepia, night) that the reader cycles from the header. The
-choice lives in `localStorage` under `tl_theme` and is applied by a tiny
-inline script in `<head>` before first paint, so there is no flash of the
-wrong palette.
+`public/index.html` reads like an editorial notebook. Warm paper, olive ink,
+Fraunces for display type, Instrument Sans for the interface, Source Serif 4
+for articles and JetBrains Mono for small labels. The fonts are served from
+`public/fonts/` (no Google Fonts request) and the two needed first are
+preloaded. Meta details are separated by hairline rules drawn in CSS
+(`metaLine()`), not by typed separator characters. Three reading themes
+(paper, sepia, night) are cycled from the header; the choice lives in
+`localStorage` under `nalar_theme` and is applied before first paint. Older
+`tl_*` keys are migrated to `nalar_*` automatically on the first visit.
+
+The whole look is defined in the "EDITORIAL LAYER" block at the end of the
+`<style>` element, so it can be read and tuned in one place.
 
 Layout notes worth knowing before editing it:
 
-- The homepage runs masthead, featured post plus recent headlines, "start
-  with these three", most read, topic shelves, then the full list. The list
+- The homepage runs masthead, featured post, "start with these three" (or
+  recommendations for returning readers), then the full list. Most read and
+  topics live in the sidebar only, so nothing is listed twice. The list
   reveals 8 posts per "show more" click rather than rendering everything.
+- highlight.js is loaded on demand, only when a post contains code.
 - Long text is capped in two places. CSS clamps titles and excerpts; JS
   clips the strings themselves via `clip()` and renders tags through
   `tagChips()`, which shows at most 2 or 3 tags and folds the rest into a
@@ -135,8 +144,8 @@ Layout notes worth knowing before editing it:
 - **Security headers** (`server/index.js`): Content Security Policy,
   `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`,
   `Permissions-Policy`, `Cross-Origin-Resource-Policy`, and HSTS over HTTPS.
-  Scripts are limited to this origin plus cdnjs (highlight.js), styles to
-  this origin plus Google Fonts, and frames to YouTube nocookie and CodePen,
+  Scripts are limited to this origin plus cdnjs (highlight.js), styles and
+  fonts to this origin, and frames to YouTube nocookie and CodePen,
   which are the only embeds the Markdown renderer can emit. Adding a new CDN
   or embed provider means editing the `CSP` array.
 - **Cookie hardening**: one middleware wraps `res.cookie` so every cookie
@@ -153,7 +162,7 @@ Layout notes worth knowing before editing it:
   tag cloud, and RSS feed are cached for 30 to 60 seconds and invalidated on
   any write (create/update/delete/pin/bulk actions, and the scheduler's
   auto-publish tick). No Redis dependency, a single instance blog doesn't
-  need one, and it's one less thing to break on a flaky disk.
+  need one.
 - **Rate limiting** (`server/rateLimit.js`, via `express-rate-limit`):
   login attempts, anonymous comments/reactions/edits, and newsletter
   subscriptions are throttled per IP; a loose limiter also covers the rest
@@ -164,8 +173,9 @@ Layout notes worth knowing before editing it:
   instead of the site wide default.
 - **Automated backups** (`deploy/backup.sh`): dumps the database, gzips it,
   rotates local copies older than `KEEP_DAYS`, and (if `RCLONE_REMOTE` is
-  set) pushes a copy off the mini PC. Meant to run daily via cron.
+  set) pushes a copy to another machine. It reads `DATABASE_URL` from `.env`,
+  so it always dumps the database the app uses. Meant to run daily via cron.
 - **CI/CD**: not set up yet. A `.github/workflows/ci.yml` that installs
   deps and syntax checks server files on every push (with an optional
-  SSH-deploy step to the mini PC once `DEPLOY_*` secrets exist) is a
+  SSH-deploy step once `DEPLOY_*` secrets exist) is a
   reasonable next step, but isn't in this repo yet.

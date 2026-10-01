@@ -1,4 +1,4 @@
-Drop your generated images here (see thoughtlog-cover-prompt-library.md):
+Drop your generated images here (see the cover prompt library):
 
   og-default.jpg      -> social share preview (prompt #19), ideally 1200x630
   default-cover.jpg   -> fallback cover for posts without one (any 16:9)
@@ -12,4 +12,4 @@ All are optional. Missing files are handled gracefully (slots simply
 don't render). Compress to <300KB each before uploading (squoosh.app).
 
 Upload from your PC:
-  scp img-file.jpg user@100.77.41.4:~/thoughtlog/public/img/
+  scp img-file.jpg user@100.77.41.4:~/nalar/public/img/

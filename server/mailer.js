@@ -23,7 +23,11 @@ const {
 } = process.env;
 
 const CONFIGURED = Boolean(SMTP_HOST && SMTP_USER && SMTP_PASS);
-const FROM = SMTP_FROM || (SMTP_USER ? `Nalar <${SMTP_USER}>` : "Nalar");
+// The sender always shows up as "Nalar", whatever display name an older .env
+// still carries in SMTP_FROM. Only the address part of SMTP_FROM is used.
+const BRAND = "Nalar";
+const FROM_ADDRESS = ((SMTP_FROM || "").match(/<([^>]+)>/)?.[1] || (SMTP_FROM || "").trim() || SMTP_USER || "").trim();
+const FROM = FROM_ADDRESS ? { name: BRAND, address: FROM_ADDRESS } : BRAND;
 
 let transporter = null;
 if (CONFIGURED) {
@@ -60,14 +64,32 @@ async function sendOne({ to, subject, html, text }) {
   }
 }
 
-const wrap = (inner) => `
-  <div style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:560px;margin:0 auto;color:#1c1d1a;line-height:1.6">
-    <div style="font-size:20px;font-weight:600;letter-spacing:-.03em;margin-bottom:18px"><span style="display:inline-block;width:24px;height:24px;line-height:24px;text-align:center;border-radius:6px;background:#4e6b35;color:#fff;font-size:14px;margin-right:8px">N</span>Nalar</div>
-    ${inner}
-    <hr style="border:none;border-top:1px solid #e6e4d9;margin:26px 0"/>
-    <div style="font-size:12px;color:#92938a">
-      You're getting this because you subscribed at
-      <a href="${SITE_URL}" style="color:#4e6b35">${SITE_URL.replace(/^https?:\/\//, "")}</a>.
+// Shared email shell. Same identity as the site: olive ink, a short gold bar
+// under the wordmark (the bar from the logo), serif headline, quiet footer.
+// Inline styles only, because email clients ignore <style> blocks.
+const C = { ink: "#1a1814", ink2: "#55514a", muted: "#8b8478", rule: "#e7e1d4", paper: "#faf7f0", olive: "#4e6b35", gold: "#c9a227" };
+const SERIF = "Georgia,'Times New Roman',serif";
+const SANS = "-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
+const SITE_HOST = SITE_URL.replace(/^https?:\/\//, "");
+
+const button = (href, label) =>
+  `<a href="${href}" style="display:inline-block;background:${C.olive};color:#ffffff;text-decoration:none;font-family:${SANS};font-size:14px;font-weight:600;padding:11px 20px;border-radius:6px">${label}</a>`;
+
+const kicker = (label) =>
+  `<div style="font-family:${SANS};font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:${C.olive};margin:0 0 10px">${label}</div>`;
+
+const wrap = (inner, note = `You get this because you subscribed at <a href="${SITE_URL}" style="color:${C.olive}">${SITE_HOST}</a>.`) => `
+  <div style="background:${C.paper};padding:28px 12px">
+    <div style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid ${C.rule};border-radius:10px;padding:30px 30px 24px;font-family:${SANS};color:${C.ink};line-height:1.6">
+      <a href="${SITE_URL}" style="text-decoration:none;color:${C.ink}">
+        <div style="font-family:${SERIF};font-size:26px;font-weight:600;letter-spacing:-.02em;line-height:1">${BRAND}</div>
+        <div style="width:30px;height:4px;border-radius:2px;background:${C.gold};margin:8px 0 22px"></div>
+      </a>
+      ${inner}
+      <div style="border-top:1px solid ${C.rule};margin:28px 0 0;padding-top:16px;font-size:12px;color:${C.muted}">
+        ${BRAND}, writing to think, by Rafi Arsya.<br/>
+        ${note}
+      </div>
     </div>
   </div>`;
 
@@ -75,14 +97,15 @@ const wrap = (inner) => `
 export async function sendWelcome(to) {
   return sendOne({
     to,
-    subject: "You are subscribed to Nalar",
-    text: `Thanks for subscribing to Nalar. You will get an email whenever a new post goes up. ${SITE_URL}`,
+    subject: "Welcome to Nalar",
+    text: `Thanks for subscribing to Nalar. You will get one short email whenever a new post goes up.\n\n${SITE_URL}`,
     html: wrap(`
-      <p style="font-size:16px;margin:0 0 14px">Thanks for subscribing 👋</p>
-      <p style="font-size:15px;color:#55564f;margin:0 0 18px">
-        You will get one short email whenever a new post goes up. No spam, unsubscribe any time.
+      ${kicker("Subscribed")}
+      <div style="font-family:${SERIF};font-size:22px;font-weight:600;line-height:1.25;margin:0 0 12px">Thanks for reading along.</div>
+      <p style="font-size:15px;color:${C.ink2};margin:0 0 20px">
+        You will get one short email whenever a new post goes up on Nalar. No spam, and you can unsubscribe any time.
       </p>
-      <a href="${SITE_URL}" style="display:inline-block;background:#4e6b35;color:#fff;text-decoration:none;font-size:14px;padding:10px 18px;border-radius:8px">Read the latest →</a>
+      ${button(SITE_URL, "Read the latest")}
     `),
   });
 }
@@ -95,12 +118,12 @@ export async function notifyNewPost(post, emails) {
   const excerpt = (post.body || "")
     .replace(/[#*`>_!\[\]]/g, "").replace(/\(.*?\)/g, "").replace(/\s+/g, " ")
     .trim().slice(0, 180);
-  const subject = `New post: ${post.title}`;
+  const subject = `New on Nalar: ${post.title}`;
   const html = wrap(`
-    <div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#92938a;margin-bottom:8px">New post</div>
-    <a href="${url}" style="font-size:22px;font-weight:700;color:#1c1d1a;text-decoration:none;line-height:1.25;display:block;margin-bottom:12px">${escapeHtml(post.title)}</a>
-    <p style="font-size:15px;color:#55564f;margin:0 0 20px">${escapeHtml(excerpt)}${excerpt.length >= 180 ? "…" : ""}</p>
-    <a href="${url}" style="display:inline-block;background:#4e6b35;color:#fff;text-decoration:none;font-size:14px;padding:10px 18px;border-radius:8px">Read it →</a>
+    ${kicker("New on Nalar")}
+    <a href="${url}" style="font-family:${SERIF};font-size:24px;font-weight:600;color:${C.ink};text-decoration:none;line-height:1.22;display:block;margin-bottom:12px">${escapeHtml(post.title)}</a>
+    <p style="font-family:${SERIF};font-size:16px;color:${C.ink2};margin:0 0 22px">${escapeHtml(excerpt)}${excerpt.length >= 180 ? "…" : ""}</p>
+    ${button(url, "Read the post")}
   `);
   const text = `New post on Nalar: ${post.title}\n\n${excerpt}\n\nRead it: ${url}`;
 
@@ -127,13 +150,14 @@ export async function notifyNewComment(post, comment) {
   if (!ADMIN_EMAIL) return false;
   const url = `${SITE_URL}/p/${post.slug}#comment-${comment.id}`;
   const preview = (comment.body || "").trim().slice(0, 300);
-  const subject = `New comment on "${post.title}"`;
+  const subject = `Nalar: new comment on "${post.title}"`;
   const html = wrap(`
-    <div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#92938a;margin-bottom:8px">New comment</div>
-    <p style="font-size:15px;margin:0 0 4px"><b>${escapeHtml(comment.author)}</b> commented on <a href="${url}" style="color:#4e6b35;text-decoration:none">${escapeHtml(post.title)}</a>${comment.rating ? ` &middot; ${"★".repeat(comment.rating)}${"☆".repeat(5 - comment.rating)}` : ""}</p>
-    <p style="font-size:15px;color:#55564f;margin:0 0 20px;white-space:pre-wrap;border-left:3px solid #e6e4d9;padding-left:14px">${escapeHtml(preview)}${preview.length >= 300 ? "…" : ""}</p>
-    <a href="${url}" style="display:inline-block;background:#4e6b35;color:#fff;text-decoration:none;font-size:14px;padding:10px 18px;border-radius:8px">Reply on the site →</a>
-  `);
+    ${kicker("New comment")}
+    <p style="font-size:15px;margin:0 0 6px"><b>${escapeHtml(comment.author)}</b> commented on <a href="${url}" style="color:${C.olive};text-decoration:none">${escapeHtml(post.title)}</a></p>
+    ${comment.rating ? `<div style="font-size:14px;color:${C.gold};letter-spacing:2px;margin:0 0 10px">${"★".repeat(comment.rating)}${"☆".repeat(5 - comment.rating)}</div>` : ""}
+    <p style="font-family:${SERIF};font-size:16px;color:${C.ink2};margin:0 0 22px;white-space:pre-wrap;border-left:3px solid ${C.gold};padding-left:14px">${escapeHtml(preview)}${preview.length >= 300 ? "…" : ""}</p>
+    ${button(url, "Reply on Nalar")}
+  `, `Sent to you as the admin of <a href="${SITE_URL}" style="color:${C.olive}">${SITE_HOST}</a>.`);
   const text = `${comment.author} commented on "${post.title}":\n\n${preview}\n\nReply: ${url}`;
   return sendOne({ to: ADMIN_EMAIL, subject, html, text });
 }

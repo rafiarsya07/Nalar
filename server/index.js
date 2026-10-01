@@ -161,7 +161,7 @@ app.set("trust proxy", 1);
 // Hand-rolled instead of pulling in helmet: this is the whole useful subset
 // for a single-page blog, and it stays readable.
 //   • CSP  — scripts only from this origin and cdnjs (highlight.js); styles
-//            from this origin and Google Fonts. 'unsafe-inline' is required
+//            and fonts only from this origin. 'unsafe-inline' is required
 //            because the app is one self-contained HTML file with inline
 //            <style>/<script>. Frames are limited to the two embed providers
 //            the Markdown renderer can emit. Nothing else may frame US.
@@ -176,8 +176,8 @@ const CSP = [
   "form-action 'self'",
   "frame-ancestors 'none'",
   "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com",
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "font-src 'self' https://fonts.gstatic.com data:",
+  "style-src 'self' 'unsafe-inline'",
+  "font-src 'self' data:",
   "img-src 'self' data: blob: https:",
   "connect-src 'self'",
   "media-src 'self'",
@@ -223,7 +223,16 @@ app.get("/rss.xsl", (req, res) => {
 
 app.use(express.json({ limit: "1mb" }));
 app.use(cookieParser());
-app.use(express.static(join(__dirname, "..", "public")));
+// Caching: fonts never change under the same name, so browsers keep them for
+// a year. Images and other assets get a week. The HTML shell is always
+// revalidated, so a deploy shows up on the next page load.
+app.use(express.static(join(__dirname, "..", "public"), {
+  setHeaders(res, path) {
+    if (/\.html?$/.test(path)) res.setHeader("Cache-Control", "no-cache");
+    else if (/[\\/]fonts[\\/]/.test(path)) res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+    else res.setHeader("Cache-Control", "public, max-age=604800");
+  },
+}));
 // Uploaded images live in server/uploads/, outside the public dir, so they
 // need their own static mount. Without this, every /uploads/* URL 404s and
 // inline/cover images render broken.
@@ -231,7 +240,7 @@ app.use("/uploads", express.static(UPLOAD_DIR, { maxAge: "30d", immutable: true 
 
 // A loose safety net over the whole API — generous enough that normal
 // browsing/typing never trips it, but enough to stop a scraper or bug from
-// hammering the DB (and, indirectly, the mini PC's disk) for free.
+// hammering the DB (and, indirectly, the server's disk) for free.
 app.use("/api", apiLimiter);
 
 // The raw index.html, read once at boot. Used as the template for injecting
@@ -274,10 +283,12 @@ function injectPostMeta(html, { title, description, url, image }) {
 // view-tracking cookie. This is what lets a single browser "have" a set of
 // emoji reactions without any login — same idea as a shopping-cart ID.
 function ensureVisitorId(req, res) {
-  let vid = req.cookies?.tl_vid;
+  // "tl_vid" is the cookie name from before the Nalar rename; carry it over so
+  // readers keep their reactions.
+  let vid = req.cookies?.nalar_vid;
   if (!vid) {
-    vid = crypto.randomBytes(16).toString("hex");
-    res.cookie("tl_vid", vid, {
+    vid = req.cookies?.tl_vid || crypto.randomBytes(16).toString("hex");
+    res.cookie("nalar_vid", vid, {
       httpOnly: true, sameSite: "lax", maxAge: 365 * 24 * 60 * 60 * 1000,
     });
   }
@@ -402,8 +413,8 @@ app.get("/api/posts/:slug", async (req, res) => {
   // signed-ish cookie (a set of "slug:expiry" pairs). Refreshing or spam-
   // clicking the same post in the same browser within the window no longer
   // inflates the count — it only goes up for a genuinely new visit.
-  const seenCookieName = "tl_seen";
-  const raw = req.cookies?.[seenCookieName] || "";
+  const seenCookieName = "nalar_seen";
+  const raw = req.cookies?.[seenCookieName] || req.cookies?.tl_seen || "";
   const now = Date.now();
   const entries = raw.split(",").filter(Boolean).map((e) => {
     const [s, exp] = e.split(":");

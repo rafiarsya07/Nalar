@@ -15,19 +15,19 @@
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <title><xsl:value-of select="/rss/channel/title"/> feed</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com"/>
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&amp;family=Source+Serif+4:opsz,wght@8..60,400&amp;display=swap" rel="stylesheet"/>
         <style>
-          :root{--bg:#fffefb;--ink:#1b1915;--ink2:#57534a;--muted:#8b8478;--rule:#e9e4da;--accent:#4e6b35}
+          @font-face{font-family:"Fraunces";font-weight:100 900;font-display:swap;src:url(/fonts/fraunces-latin-wght-normal.woff2) format("woff2")}
+          @font-face{font-family:"Instrument Sans";font-weight:400 700;font-display:swap;src:url(/fonts/instrument-sans-latin-wght-normal.woff2) format("woff2")}
+          @font-face{font-family:"Source Serif 4";font-weight:200 900;font-display:swap;src:url(/fonts/source-serif-4-latin-wght-normal.woff2) format("woff2")}
+          :root{--bg:#fbf8f2;--ink:#1a1814;--ink2:#55514a;--muted:#8a8274;--rule:#e4ddcf;--accent:#4e6b35;--gold:#b8921c}
           *{box-sizing:border-box;margin:0}
-          body{background:var(--bg);color:var(--ink);font-family:Poppins,system-ui,sans-serif;line-height:1.6}
+          body{background:var(--bg);color:var(--ink);font-family:"Instrument Sans",system-ui,sans-serif;line-height:1.6}
           .wrap{max-width:680px;margin:0 auto;padding:48px 24px 80px}
           .brand{display:flex;align-items:center;gap:10px;margin-bottom:34px}
           .brand img{width:30px;height:30px;border-radius:8px;display:block}
-          .brand span{font-size:21px;font-weight:600;letter-spacing:-.03em}
-          .note{border:1px solid var(--rule);border-radius:10px;padding:18px 20px;background:#faf7f1;margin-bottom:34px}
-          .note h1{font-size:19px;font-weight:600;letter-spacing:-.02em;margin-bottom:8px}
+          .brand span{font-family:Fraunces,Georgia,serif;font-size:24px;font-weight:600;letter-spacing:-.02em}
+          .note{border:1px solid var(--rule);border-top:3px solid var(--gold);border-radius:6px;padding:18px 20px;background:#faf7f1;margin-bottom:34px}
+          .note h1{font-family:Fraunces,Georgia,serif;font-size:21px;font-weight:600;letter-spacing:-.02em;margin-bottom:8px}
           .note p{font-size:14.5px;color:var(--ink2);margin-bottom:10px}
           .note p:last-child{margin-bottom:0}
           .url{display:flex;gap:8px;align-items:center;margin-top:12px}
@@ -36,7 +36,7 @@
           h2.sec{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
           .item{padding:20px 0;border-bottom:1px solid var(--rule)}
           .item:last-child{border-bottom:none}
-          .item a{font-size:20px;font-weight:600;letter-spacing:-.02em;color:var(--ink);text-decoration:none;line-height:1.3;display:block}
+          .item a{font-family:Fraunces,Georgia,serif;font-size:21px;font-weight:600;letter-spacing:-.02em;color:var(--ink);text-decoration:none;line-height:1.3;display:block}
           .item a:hover{text-decoration:underline;text-underline-offset:3px}
           .item .date{font-size:12.5px;color:var(--muted);margin-bottom:6px}
           .item .desc{font-family:"Source Serif 4",Georgia,serif;font-size:16px;color:var(--ink2);margin-top:7px}
@@ -45,7 +45,7 @@
           footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--rule);font-size:12.5px;color:var(--muted)}
           footer a{color:var(--accent)}
           @media (prefers-color-scheme:dark){
-            :root{--bg:#131211;--ink:#eae5db;--ink2:#b9b2a5;--muted:#8c8578;--rule:#2e2b26;--accent:#9db97a}
+            :root{--bg:#131211;--ink:#eae5db;--ink2:#b9b2a5;--muted:#8c8578;--rule:#2e2b26;--accent:#9db97a;--gold:#d6b24c}
             .note,.tags span{background:#1a1917}
             .url code{background:#1a1917}
           }

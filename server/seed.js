@@ -45,17 +45,17 @@ waiting -> countdown -> selecting -> resolving -> ended
 A modified client can lie all it wants; the server doesn't believe it.`,
   },
   {
-    title: "Self-hosting on a mini PC: what actually broke",
-    slug: "self-hosting-mini-pc",
-    tags: ["devops", "self-hosting", "postgresql"],
+    title: "What actually broke the first time I deployed this",
+    slug: "first-deploy-what-broke",
+    tags: ["devops", "postgresql"],
     status: "draft",
-    body: `Draft — notes on deploying to my own hardware: port conflicts, suspend, PM2 over npm start, Cloudflare Tunnel...`,
+    body: `Draft — notes on the first deploy: port conflicts, a process manager over npm start, and the database that would not start...`,
   },
 ];
 
 try {
-  await pool.query("TRUNCATE posts RESTART IDENTITY");
-  await pool.query("TRUNCATE users RESTART IDENTITY");
+  await pool.query("TRUNCATE posts RESTART IDENTITY CASCADE");
+  await pool.query("TRUNCATE users RESTART IDENTITY CASCADE");
 
   const passwordHash = await hashPassword(ADMIN_PASS);
   await pool.query(

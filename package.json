@@ -1,7 +1,7 @@
 {
-  "name": "thoughtlog",
+  "name": "nalar",
   "version": "1.0.0",
-  "description": "A full-stack personal blog with a writing CMS, full-text search, and view tracking",
+  "description": "Nalar: a personal blog with a hand-built writing CMS, full-text search and view tracking",
   "type": "module",
   "scripts": {
     "start": "node server/index.js",

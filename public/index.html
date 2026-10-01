@@ -4,9 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Nalar</title>
-<meta name="description" content="Nalar is where Rafi Arsya thinks out loud about software: what he builds, what breaks, and what he would do differently." />
+<meta name="description" content="Nalar is where Rafi Arsya writes to think: notes on what he builds, what breaks, and what he would do differently." />
 <meta name="author" content="Muhammad Rafi Arsya" />
-<meta name="theme-color" content="#fffefb" />
+<meta name="theme-color" content="#fbf8f2" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png" />
@@ -17,22 +17,33 @@
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Nalar" />
 <meta property="og:title" content="Nalar" />
-<meta property="og:description" content="Thinking out loud about software: what I build, what breaks, and what I would do differently." />
+<meta property="og:description" content="Writing to think. Notes on what I build, what breaks, and what I would do differently." />
 <meta property="og:url" content="https://blog.rafiarsya.com" />
 <meta property="og:image" content="https://blog.rafiarsya.com/img/og-default.jpg" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Nalar" />
-<meta name="twitter:description" content="Thinking out loud about software: what I build, what breaks, and what I would do differently." />
+<meta name="twitter:description" content="Writing to think. Notes on what I build, what breaks, and what I would do differently." />
 <meta name="twitter:image" content="https://blog.rafiarsya.com/img/og-default.jpg" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+<!-- Fonts are served from this site (no third-party request, no layout
+     shift from a late stylesheet). The two faces every page needs first are
+     preloaded; the rest load when something actually uses them. -->
+<link rel="preload" href="/fonts/fraunces-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/fonts/instrument-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
 <script>
   /* Apply the saved reading theme before first paint so there is no flash. */
   (function(){
     try{
-      var t=localStorage.getItem("tl_theme");
+      /* One-time move of reader data saved under the old "tl_" key names
+         (bookmarks, history, theme, drafts) to the "nalar_" names. */
+      for(var i=localStorage.length-1;i>=0;i--){
+        var k=localStorage.key(i);
+        if(k&&k.indexOf("tl_")===0){
+          var nk="nalar_"+k.slice(3);
+          if(localStorage.getItem(nk)===null)localStorage.setItem(nk,localStorage.getItem(k));
+          localStorage.removeItem(k);
+        }
+      }
+      var t=localStorage.getItem("nalar_theme");
       if(t!=="light"&&t!=="sepia"&&t!=="dark"){
         t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";
       }
@@ -41,24 +52,31 @@
   })();
 </script>
 <style>
+  @font-face{font-family:"Fraunces";font-style:normal;font-weight:100 900;font-display:swap;src:url(/fonts/fraunces-latin-wght-normal.woff2) format("woff2")}
+  @font-face{font-family:"Fraunces";font-style:italic;font-weight:100 900;font-display:swap;src:url(/fonts/fraunces-latin-wght-italic.woff2) format("woff2")}
+  @font-face{font-family:"Instrument Sans";font-style:normal;font-weight:400 700;font-display:swap;src:url(/fonts/instrument-sans-latin-wght-normal.woff2) format("woff2")}
+  @font-face{font-family:"Source Serif 4";font-style:normal;font-weight:200 900;font-display:swap;src:url(/fonts/source-serif-4-latin-wght-normal.woff2) format("woff2")}
+  @font-face{font-family:"Source Serif 4";font-style:italic;font-weight:200 900;font-display:swap;src:url(/fonts/source-serif-4-latin-wght-italic.woff2) format("woff2")}
+  @font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:100 800;font-display:swap;src:url(/fonts/jetbrains-mono-latin-wght-normal.woff2) format("woff2")}
   /* ==========================================================================
      NALAR — design system
-     Reading experience modelled on Medium: one narrow column, sans display
-     type, serif body at 21px, almost no chrome. The palette is warm rather
-     than pure grey so it still reads as Nalar and not as a clone.
-     Type: Poppins (UI + headings, same as the portfolio), Source Serif 4
-     (article body), JetBrains Mono (meta).
+     An editorial notebook: warm paper, olive ink, and one gold bar (the bar
+     from the logo) used as the house mark for kickers, rules and breaks.
+     Type: Fraunces (display), Instrument Sans (UI), Source Serif 4 (article
+     body), JetBrains Mono (small labels). All served from /fonts.
      ========================================================================== */
 
   :root{
-    --bg:#fffefb;
-    --surface:#ffffff;
-    --surface-2:#faf7f1;
-    --ink:#1b1915;
-    --ink-2:#57534a;
-    --muted:#8b8478;
-    --rule:#e9e4da;
-    --rule-2:#f4f0e8;
+    --bg:#fbf8f2;
+    --surface:#fffdf9;
+    --surface-2:#f4efe5;
+    --ink:#1a1814;
+    --ink-2:#55514a;
+    --muted:#8a8274;
+    --rule:#e4ddcf;
+    --rule-2:#eee8dc;
+    --gold:#b8921c;
+    --gold-soft:#f3e9c8;
     --accent:#4e6b35;
     --accent-hover:#3f5729;
     --accent-soft:#edf2e6;
@@ -73,8 +91,8 @@
     --ease:cubic-bezier(.22,.61,.36,1);
     --radius:10px;
     --radius-sm:7px;
-    --font-ui:"Poppins",system-ui,-apple-system,"Segoe UI",sans-serif;
-    --font-display:"Poppins",system-ui,sans-serif;
+    --font-ui:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --font-display:"Fraunces",Georgia,"Times New Roman",serif;
     --font-read:"Source Serif 4",Charter,Georgia,"Times New Roman",serif;
     --font-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
     --measure:680px;
@@ -97,6 +115,8 @@
     --accent-ink:#4a5525;
     --amber:#8d6519;
     --amber-soft:#eee0c1;
+    --gold:#a8831a;
+    --gold-soft:#eadcb4;
   }
   html[data-theme="dark"]{
     --bg:#131211;
@@ -113,6 +133,8 @@
     --accent-ink:#b6cf94;
     --amber:#cda45f;
     --amber-soft:#2c2416;
+    --gold:#d6b24c;
+    --gold-soft:#2e2715;
     --danger:#d4836d;
     --danger-soft:#33201b;
     --shadow-sm:0 1px 2px rgba(0,0,0,.35);
@@ -1667,6 +1689,298 @@
     .pc-overlay,.pc-details{display:none}
     .post-card:hover .post-title{color:inherit}
   }
+
+  /* ==========================================================================
+     EDITORIAL LAYER
+     Everything below restyles the components above into Nalar's own look:
+     Fraunces headlines, small mono kickers, hairline rules, and the gold bar
+     from the logo as the one recurring mark. Kept as one block so the system
+     reads top to bottom in one place.
+     ========================================================================== */
+  body{font-size:15.5px;font-feature-settings:"ss01"}
+  h1,h2,h3,h4{font-weight:600;letter-spacing:-.012em}
+  ::selection{background:var(--gold-soft);color:var(--ink)}
+
+  /* --- shared parts ------------------------------------------------------ */
+  .meta-line{display:inline-flex;align-items:center;flex-wrap:wrap;row-gap:4px;min-width:0}
+  /* Each item carries a hairline on its left. The row is shifted left by one
+     gap and clipped, so whichever item starts a line (the first one, or one
+     that wrapped) never shows a stray rule in front of it. */
+  .meta-line{margin-left:-1.3em;clip-path:inset(-6px -6px -6px 1.3em)}
+  .meta-line>span{position:relative;display:inline-flex;align-items:center;min-width:0;white-space:nowrap;margin-left:.65em;padding-left:.65em}
+  .meta-line>span::before{
+    content:"";position:absolute;left:0;top:50%;width:1px;height:.95em;transform:translateY(-50%);
+    background:currentColor;opacity:.32;
+  }
+  .meta-line a{color:inherit;text-decoration:none}
+  .meta-line a:hover{color:var(--accent)}
+  .gold-bar,.kicker-bar{display:inline-block;width:22px;height:3px;border-radius:2px;background:var(--gold)}
+  .eyebrow,.section-label{font-family:var(--font-mono);font-size:10.5px;font-weight:500;letter-spacing:.16em;color:var(--accent)}
+
+  .btn{border-radius:6px;font-weight:600;letter-spacing:.005em}
+  .btn.small{border-radius:5px}
+  .btn-sm,.show-more button,.nl-form button,.nl-form input,.footer-sub-form input,.footer-sub-form button,
+  .sub-modal-form input,.sub-modal-form button,.search-row,.reaction-btn,.seg,.fsearch input,.subs-tools input{border-radius:6px}
+  .seg{overflow:hidden}
+
+  /* tags read as small printed labels, not pills */
+  .tag,.tag-chip{
+    background:none;padding:0;border-radius:0;max-width:180px;
+    font-family:var(--font-mono);font-size:10.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--accent);
+  }
+  a.tag-chip:hover,button.tag-chip:hover,.tag:hover{background:none;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+  .post-meta .tag-chip+.tag-chip{margin-left:4px}
+  .tag-more{font-family:var(--font-mono);font-size:10.5px}
+  .pinned-badge,.label-pin,.pc-pin{
+    display:inline-flex;align-items:center;gap:6px;
+    font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);
+  }
+  .label-pin::before,.pinned-badge::before{content:"";width:14px;height:3px;border-radius:2px;background:var(--gold)}
+  .label-pin.is-latest{color:var(--muted)}
+  .label-pin.is-latest::before{background:var(--rule)}
+
+  /* section headings: a mono label with the gold bar in front */
+  .sec-head{align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--rule)}
+  .sec-head h2,.rec-head h2,.sh-heading,.tr-heading,.topic-heading,.related h3,.comments-section h3,.widget-title{
+    display:flex;align-items:center;gap:10px;
+    font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);
+  }
+  .sec-head h2::before,.rec-head h2::before,.sh-heading::before,.related h3::before,.comments-section h3::before,.widget-title::before{
+    content:"";width:18px;height:3px;border-radius:2px;background:var(--gold);flex-shrink:0;
+  }
+  .sec-head .sec-note{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em}
+  .sh-badge{display:none}
+  .count-badge{font-family:var(--font-mono);font-size:10.5px;letter-spacing:0;text-transform:none;border-radius:4px}
+
+  /* --- header -------------------------------------------------------------- */
+  header.site{border-bottom-color:var(--rule)}
+  .brand{font-family:var(--font-display);font-size:22px;font-weight:600;letter-spacing:-.02em;gap:9px}
+  .brand-mark,img.brand-mark,.brand-mark-fallback{border-radius:6px}
+  .nav-links a{font-size:14px;border-radius:6px;padding:6px 10px}
+  .nav-links a.on{color:var(--ink);font-weight:500;box-shadow:inset 0 -2px 0 var(--gold);border-radius:0}
+  .nav button{border-radius:6px}
+  .nav-search-btn{border-radius:6px;background:transparent}
+  .nav-icon-btn{border-radius:6px!important}
+  .progress-bar{background:var(--gold);height:2px}
+  /* the floating search pill repeated the header's search button */
+  .cmdk-hint{display:none!important}
+
+  /* --- masthead ------------------------------------------------------------- */
+  .masthead{position:relative;padding:6px 0 26px;margin-bottom:28px;border-bottom:1px solid var(--rule)}
+  .masthead::before{content:"";display:block;height:3px;background:var(--ink);margin-bottom:22px;border-radius:1px}
+  html[data-theme="dark"] .masthead::before{background:var(--ink-2)}
+  .masthead .mh-kicker{display:block;font-family:var(--font-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+  .masthead h1.mh-title{
+    font-family:var(--font-display);font-weight:600;font-size:clamp(52px,8.5vw,92px);
+    letter-spacing:-.035em;line-height:.92;margin:0 0 18px;display:inline-block;position:relative;
+  }
+  .masthead h1.mh-title::after{
+    content:"";position:absolute;left:4px;bottom:-10px;width:64px;height:6px;border-radius:3px;background:var(--gold);
+  }
+  .masthead .mh-sub{
+    font-family:var(--font-display);font-style:italic;font-weight:400;font-size:clamp(18px,2.2vw,22px);
+    line-height:1.42;color:var(--ink-2);max-width:540px;margin:10px 0 16px;
+  }
+  .masthead .mh-meta{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+
+  /* --- featured post --------------------------------------------------------- */
+  .hero-post{padding:0 0 30px;margin-bottom:30px;border-bottom:1px solid var(--rule)}
+  .hero-media{overflow:hidden;border-radius:4px;margin-bottom:22px;background:var(--surface-2)}
+  .hero-post .hero-img{aspect-ratio:21/10;margin:0;border-radius:0;transition:transform .8s var(--ease)}
+  .hero-post:hover .hero-img{transform:scale(1.025)}
+  .hero-eyebrow{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+  .hero-tag{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+    max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hero-title{
+    font-family:var(--font-display);font-size:clamp(28px,3.6vw,40px);font-weight:600;line-height:1.1;letter-spacing:-.022em;
+    margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+    text-wrap:balance;
+  }
+  .hero-post:hover .hero-title{text-decoration:none;color:var(--accent)}
+  .hero-excerpt{font-size:17.5px;-webkit-line-clamp:2;max-width:620px}
+  .hero-meta{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--muted)}
+
+  /* --- feed cards ----------------------------------------------------------- */
+  .post-card{grid-template-columns:minmax(0,1fr) 150px;gap:28px;padding:22px 0;margin:0;border-radius:0;align-items:center}
+  .post-card.no-thumb{grid-template-columns:minmax(0,1fr)}
+  .post-card::after{left:0;right:0;background:var(--rule-2)}
+  article.post-card:hover,.post-card:hover{transform:none;box-shadow:none;background:transparent}
+  html[data-theme="dark"] .post-card:hover{background:transparent}
+  .post-card:hover::after{opacity:1}
+  .pc-thumb-wrap{width:150px;height:100px;border-radius:3px}
+  .post-card:hover img.pc-thumb{transform:scale(1.05)}
+  .pc-kicker{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+  .pc-kicker .pc-tag{color:var(--accent);max-width:170px;overflow:hidden;text-overflow:ellipsis;display:inline-block}
+  .post-card .post-title{font-size:22px;line-height:1.2;letter-spacing:-.015em;margin-bottom:7px;text-wrap:balance}
+  .post-card:hover .post-title{color:var(--accent)}
+  .post-excerpt{font-size:16px;line-height:1.5;-webkit-line-clamp:2;margin-bottom:10px}
+  .post-meta{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--muted)}
+  .show-more button .sm-left{color:var(--muted);margin-left:8px;font-size:.9em}
+  .show-more button{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em}
+
+  /* start here: three numbered columns */
+  .sh-grid{counter-reset:sh;gap:26px}
+  .sh-card{border-top:1px solid var(--ink);padding-top:12px;counter-increment:sh}
+  .sh-label{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--muted)}
+  .sh-label::before{content:"0" counter(sh) "  ";color:var(--gold);font-weight:600}
+  .sh-title{font-size:18px;line-height:1.22;-webkit-line-clamp:3}
+  .sh-note{font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .rec-n{font-family:var(--font-display);font-style:italic;color:var(--gold)}
+  .rec-meta,.tr-views{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em}
+
+  /* search + tag filter */
+  .search-row{background:var(--surface)}
+  .tagcloud button,.widget-tags button,.topic-tile{border-radius:4px}
+  .tagcloud button{font-size:12.5px}
+
+  /* newsletter */
+  .nl-bar{border-radius:6px;background:var(--surface);border-color:var(--rule);border-top:3px solid var(--gold)}
+  .nl-text h3{font-size:21px}
+
+  /* --- sidebar ------------------------------------------------------------- */
+  .page-grid.with-sidebar .sidebar{padding-left:30px}
+  .widget{margin-bottom:34px}
+  .widget-title{margin-bottom:14px}
+  .widget-profile .wp-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .widget-profile .avatar{width:44px;height:44px;margin:0;font-family:var(--font-display);font-style:italic;font-size:22px;border-radius:50%}
+  .widget-profile .name{font-size:18px;margin:0;line-height:1.1}
+  .widget-profile .wp-role{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+  .widget-profile .bio{font-size:14px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .widget-profile .links{gap:16px}
+  .widget-profile .links a{font-size:13px;font-weight:500}
+  .popular-item{padding:10px 0;border-bottom:1px solid var(--rule-2)}
+  .popular-item:last-child{border-bottom:none}
+  .pi-num{font-family:var(--font-display);font-style:italic;font-weight:500;font-size:20px;line-height:1;color:var(--gold);width:24px}
+  html[data-theme="dark"] .pi-num{color:var(--gold)}
+  .pi-title{font-size:15px;line-height:1.25;letter-spacing:-.01em}
+  .pi-meta{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em}
+  .widget-tags{gap:6px}
+  .widget-tags button{font-size:12px;padding:4px 10px}
+  .widget-archive li{padding:6px 0;border-bottom:1px solid var(--rule-2)}
+  .wa-count{font-family:var(--font-mono)}
+  .widget-actions{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .widget-actions .show-more-inline{display:inline-flex;align-items:center;gap:6px}
+  .widget-support{border-radius:6px;background:var(--surface);border-top:3px solid var(--gold)}
+  .widget-support p{font-size:13.5px;color:var(--ink-2);line-height:1.5;margin:0 0 12px}
+
+  /* --- article ------------------------------------------------------------- */
+  .crumbs{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+  .crumbs .here{max-width:260px}
+  .post .post-title{font-size:clamp(32px,5vw,48px);line-height:1.08;letter-spacing:-.025em;text-wrap:balance}
+  .article-subtitle{font-family:var(--font-display);font-style:italic;font-size:21px;line-height:1.4;color:var(--ink-2)}
+  .byline{border-top:1px solid var(--ink);border-bottom:1px solid var(--rule);padding:16px 0}
+  html[data-theme="dark"] .byline{border-top-color:var(--ink-2)}
+  .bl-avatar{font-style:italic}
+  .bl-name{font-family:var(--font-display);font-size:16px;font-weight:600}
+  .bl-sub{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;margin-top:2px}
+  .post .post-body>p:first-child::first-letter{
+    font-family:var(--font-display);font-weight:600;float:left;font-size:3.35em;line-height:.82;
+    margin:.06em .1em 0 0;color:var(--accent);
+  }
+  .post-body h2,.post-body h3{letter-spacing:-.015em}
+  .post-body blockquote{border-left-color:var(--gold);font-family:var(--font-display);font-size:1.05em;color:var(--ink)}
+  html[data-theme="dark"] .post-body blockquote{border-left-color:var(--gold)}
+  .post-body hr{height:auto;display:flex;justify-content:center}
+  .post-body hr::before{content:"";width:46px;height:4px;border-radius:2px;background:var(--gold);letter-spacing:0}
+  .post-body a{text-decoration-color:var(--gold);text-decoration-thickness:2px}
+  .toc{border-radius:6px}
+  .related-item,.pn-title{font-family:var(--font-display);font-weight:600}
+  .related-item{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .share-row .lbl{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+  .comment-form{border-radius:6px}
+  .comment-body{max-height:none}
+
+  /* --- pages ----------------------------------------------------------------- */
+  .page-head h1{font-size:clamp(32px,5vw,46px);letter-spacing:-.025em}
+  .page-head .ph-sub{font-family:var(--font-display);font-style:italic}
+  .archive-year h2{font-size:30px}
+  .ai-title{font-family:var(--font-display);font-weight:500;font-size:16px}
+  .series-card{border-radius:6px}
+  .series-card-title{font-size:20px}
+
+  /* About */
+  .about{max-width:640px}
+  .about-head{padding-bottom:6px}
+  .about-head .eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .about-head .eyebrow::before{content:"";width:18px;height:3px;border-radius:2px;background:var(--gold)}
+  .about-title{font-family:var(--font-display);font-size:clamp(36px,6vw,56px);line-height:1.02;letter-spacing:-.03em;margin:0 0 16px;text-wrap:balance}
+  .about-lede{font-family:var(--font-display);font-style:italic;font-size:21px;line-height:1.4;color:var(--ink-2);margin:0 0 26px}
+  .about-figure{margin:0 0 28px;border-radius:4px;overflow:hidden;background:var(--surface-2)}
+  .about-figure img{display:block;width:100%;aspect-ratio:21/9;object-fit:cover}
+  .about-body{font-family:var(--font-read);font-size:19px;line-height:1.65}
+  .about-body p{margin:0 0 1.15em}
+  .about-body>p:first-child::first-letter{
+    font-family:var(--font-display);font-weight:600;float:left;font-size:3.3em;line-height:.82;margin:.06em .1em 0 0;color:var(--accent);
+  }
+  .about-shelves{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin:34px 0 30px;padding-top:22px;border-top:1px solid var(--ink)}
+  html[data-theme="dark"] .about-shelves{border-top-color:var(--ink-2)}
+  .as-num{font-family:var(--font-display);font-style:italic;font-size:22px;color:var(--gold);line-height:1;margin-bottom:8px}
+  .as-title{font-family:var(--font-display);font-size:19px;font-weight:600;margin-bottom:6px}
+  .about-shelf p{font-size:14px;line-height:1.5;color:var(--ink-2);margin:0}
+  .about-cta{margin:0 0 30px}
+  .about-elsewhere{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;padding-top:18px;border-top:1px solid var(--rule)}
+  .about-elsewhere .ae-label{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .about-elsewhere a{font-size:14px;font-weight:500;color:var(--ink);text-decoration:underline;text-decoration-color:var(--gold);text-decoration-thickness:2px;text-underline-offset:4px}
+  .about-elsewhere a:hover{color:var(--accent)}
+
+  /* --- footer ---------------------------------------------------------------- */
+  footer.site{border-top:3px solid var(--ink);margin-top:40px}
+  html[data-theme="dark"] footer.site{border-top-color:var(--ink-2)}
+  .footer-brand{font-size:30px;letter-spacing:-.03em;margin-bottom:6px;position:relative;display:inline-block}
+  .footer-brand::after{content:"";display:block;width:30px;height:4px;border-radius:2px;background:var(--gold);margin-top:6px}
+  .footer-heading{font-family:var(--font-mono);font-size:10.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .footer-social a{border-radius:6px}
+  .footer-bottom{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em}
+
+  /* --- modals ---------------------------------------------------------------- */
+  .sub-modal{border-radius:10px;border-top:3px solid var(--gold)}
+  .sub-modal h3{font-size:26px}
+  .ratio-n{color:var(--muted);font-family:var(--font-mono);font-size:.9em;margin-left:4px}
+  .cover-ratio-picker button.on .ratio-n{color:inherit;opacity:.8}
+
+  /* --- responsive ----------------------------------------------------------- */
+  @media (max-width:860px){
+    .about-shelves{grid-template-columns:minmax(0,1fr);gap:18px}
+  }
+  .nav .nav-search-btn svg{flex-shrink:0}
+  @media (max-width:680px){
+    .nav .nav-search-btn{padding:0}
+    .masthead{padding-top:0;margin-bottom:22px}
+    .masthead::before{margin-bottom:16px}
+    .masthead h1.mh-title{font-size:58px}
+    .masthead .mh-sub{font-size:18px}
+    .hero-post .hero-img{aspect-ratio:16/10}
+    .hero-title{font-size:27px}
+    .hero-excerpt{font-size:16px}
+    .post-card{grid-template-columns:minmax(0,1fr) 84px;gap:16px;padding:18px 0;margin:0}
+    .post-card::after{left:0;right:0}
+    .pc-thumb-wrap{width:84px;height:84px}
+    .post-card .post-title{font-size:18.5px;-webkit-line-clamp:3}
+    .pc-kicker{margin-bottom:6px}
+    .post .post-title{font-size:32px}
+    .article-subtitle{font-size:18px}
+    .about-title{font-size:38px}
+    .about-lede{font-size:18px}
+    .about-body{font-size:17.5px}
+    .crumbs .here{max-width:160px}
+  }
+  @media (max-width:360px){
+    .post-card{grid-template-columns:minmax(0,1fr) 72px}
+    .pc-thumb-wrap{width:72px;height:72px}
+  }
+  @media (hover:none){
+    .post-card{padding-bottom:18px}
+  }
+
+  .tagcloud:empty{display:none}
+  .search-hint:empty{min-height:0;margin:0 0 12px}
+  .comments-section h3 .illus-inline,.comments-section h3 .illus-wrap{display:none}
+  .nav-drawer{visibility:hidden;transition:transform .3s var(--ease),visibility 0s linear .3s}
+  .nav-drawer.open{visibility:visible;transition:transform .3s var(--ease),visibility 0s}
+  /* below this width the topic filter sits inline above the list, so the rail
+     and the footer don't need to repeat it */
+  @media (max-width:1080px){.widget-topics,.footer-topics{display:none}}
 </style>
 </head>
 <body>
@@ -1721,7 +2035,7 @@
     <div class="wrap footer-grid">
       <div class="footer-col">
         <div class="footer-brand">Nalar</div>
-        <p class="footer-bio">Thinking out loud about software. Written and self hosted by Rafi Arsya, on a mini PC that occasionally needs a reboot.</p>
+        <p class="footer-bio">Writing to think, mostly about software and the life around it. By Rafi Arsya.</p>
         <div class="footer-social">
           <a href="https://rafiarsya.com" target="_blank" rel="noopener" title="Portfolio" aria-label="Portfolio">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
@@ -1735,7 +2049,7 @@
         </div>
       </div>
 
-      <div class="footer-col">
+      <div class="footer-col footer-topics">
         <div class="footer-heading">Topics</div>
         <div id="footerTopics" class="footer-links footer-links-v"></div>
       </div>
@@ -1839,7 +2153,7 @@ function timeAgo(ts){
 // Anonymous comment ownership: when you post a comment the server hands back a
 // one-time edit token; we keep it here, keyed by comment id, so the same
 // browser can later edit or delete that comment. Cleared if you clear storage.
-const COMMENT_TOKENS_KEY="tl_comment_tokens";
+const COMMENT_TOKENS_KEY="nalar_comment_tokens";
 function getCommentTokens(){try{return JSON.parse(localStorage.getItem(COMMENT_TOKENS_KEY)||"{}")}catch{return{}}}
 function saveCommentToken(id,token){const t=getCommentTokens();t[id]=token;localStorage.setItem(COMMENT_TOKENS_KEY,JSON.stringify(t))}
 function tokenFor(id){return getCommentTokens()[id]||null}
@@ -1858,6 +2172,12 @@ function jsq(s){
 // Hard cap on any label that renders in a chip, crumb or card so one very long
 // word can never blow out a layout. CSS truncates visually; this truncates the
 // string itself, which also keeps titles/tooltips sane.
+// Meta details (date, reading time, views) sit side by side, divided by a
+// hairline rule drawn in CSS instead of a typed separator character.
+function metaLine(parts,cls){
+  const items=(parts||[]).filter(Boolean);
+  return items.length?`<span class="meta-line${cls?" "+cls:""}">${items.map(x=>`<span>${x}</span>`).join("")}</span>`:"";
+}
 function clip(s,n){
   s=String(s==null?"":s);
   return s.length>n?s.slice(0,n-1).trimEnd()+"…":s;
@@ -1917,7 +2237,7 @@ const THEME_META={
 function getTheme(){
   const t=document.documentElement.getAttribute("data-theme");
   if(THEMES.includes(t))return t;
-  try{const s=localStorage.getItem("tl_theme");if(THEMES.includes(s))return s}catch{}
+  try{const s=localStorage.getItem("nalar_theme");if(THEMES.includes(s))return s}catch{}
   return "light";
 }
 function applyTheme(t){
@@ -1927,7 +2247,7 @@ function applyTheme(t){
   if(meta)meta.setAttribute("content",t==="dark"?"#181611":t==="sepia"?"#eee2cb":"#f6f2e9");
 }
 function setTheme(t){
-  try{localStorage.setItem("tl_theme",t)}catch{}
+  try{localStorage.setItem("nalar_theme",t)}catch{}
   applyTheme(t);
   renderNav();
 }
@@ -1940,14 +2260,14 @@ applyTheme(getTheme());
 
 // ---- bookmarks / reading list: saved purely client-side (per-browser), ----
 // keyed by slug so it survives independent of any account/login state.
-function getBookmarks(){try{return JSON.parse(localStorage.getItem("tl_bookmarks")||"[]")}catch{return[]}}
+function getBookmarks(){try{return JSON.parse(localStorage.getItem("nalar_bookmarks")||"[]")}catch{return[]}}
 function isBookmarked(slug){return getBookmarks().some(b=>b.slug===slug)}
 function toggleBookmark(slug,title,btn){
   let list=getBookmarks();
   const idx=list.findIndex(b=>b.slug===slug);
   if(idx>-1){list.splice(idx,1)}
   else{list.unshift({slug,title,savedAt:Date.now()});if(list.length>200)list=list.slice(0,200)}
-  localStorage.setItem("tl_bookmarks",JSON.stringify(list));
+  localStorage.setItem("nalar_bookmarks",JSON.stringify(list));
   renderNav();
   if(btn){
     btn.classList.toggle("saved",idx===-1);
@@ -1963,13 +2283,13 @@ function bookmarkBtn(slug,title,inline){
 
 // ---- "continue reading", remembers the last post opened so the reader ----
 // can pick back up from the homepage without hunting for it.
-function getLastRead(){try{return JSON.parse(localStorage.getItem("tl_last_read")||"null")}catch{return null}}
+function getLastRead(){try{return JSON.parse(localStorage.getItem("nalar_last_read")||"null")}catch{return null}}
 function setLastRead(slug,title){
   if(document.getElementById("resumeBanner")?.dataset.dismissed==="1")return;
-  localStorage.setItem("tl_last_read",JSON.stringify({slug,title,at:Date.now()}));
+  localStorage.setItem("nalar_last_read",JSON.stringify({slug,title,at:Date.now()}));
 }
 function dismissResume(){
-  localStorage.removeItem("tl_last_read");
+  localStorage.removeItem("nalar_last_read");
   document.getElementById("resumeBanner")?.remove();
 }
 function resumeBannerHtml(currentSlug){
@@ -2057,7 +2377,7 @@ function mountNavDrawer(){
         <button class="nav-drawer-close" onclick="closeNavDrawer()" aria-label="Close menu">${ICONS.close}</button>
       </div>
       <div class="nav-drawer-links" id="navDrawerLinks"></div>
-      <div class="nav-drawer-foot">Nalar, written and self hosted by Rafi Arsya.</div>
+      <div class="nav-drawer-foot">Nalar, writing to think. By Rafi Arsya.</div>
     </aside>`);
   document.addEventListener("keydown",(e)=>{
     if(e.key==="Escape"&&document.getElementById("navDrawer")?.classList.contains("open"))closeNavDrawer();
@@ -2177,7 +2497,7 @@ function mountSubscribeModal(){
           <input id="subEmailModal" type="email" placeholder="you@example.com" autocomplete="email"/>
           <button id="subBtnModal" onclick="submitSubscribeModal()">Subscribe →</button>
         </div>
-        <p class="sub-modal-note">No spam · Unsubscribe any time</p>
+        <p class="sub-modal-note">No spam. Unsubscribe any time.</p>
       </div>
     </div>`);
   // close on backdrop click
@@ -2244,7 +2564,7 @@ function renderSupportMethodList(){
   el.innerHTML=`
     <div class="illus-wrap illus-small">${ILLUS.makeItRain}</div>
     <h3>Support this blog</h3>
-    <p>Nalar runs off a mini PC in my room. No ads, no paywall. A tip is completely optional and always appreciated.</p>
+    <p>Nalar has no ads and no paywall. A tip is completely optional and always appreciated.</p>
     <div class="support-method-list">
       ${SUPPORT_METHODS.map(m=>`
         <button class="support-method-btn" onclick="renderSupportMethodDetail('${m.id}')">
@@ -2362,7 +2682,7 @@ async function subscribeFooter(){
 // noticing which topics somebody keeps opening and putting more of those in
 // front of them.
 // ---------------------------------------------------------------------------
-const HISTORY_KEY="tl_history";
+const HISTORY_KEY="nalar_history";
 const HISTORY_MAX=40;
 const HALF_LIFE_DAYS=21; // how fast an old read stops counting
 
@@ -2424,7 +2744,7 @@ function recListHtml(items){
       <span class="rec-n">${String(i+1).padStart(2,"0")}</span>
       <div>
         <div class="rec-title">${esc(p.title)}</div>
-        <div class="rec-meta">${it.why?`<span class="rec-tag">#${esc(clip(it.why,20))}</span> · `:""}${p.readingTime} min read · ${fmtNum(p.views)} views</div>
+        <div class="rec-meta">${metaLine([it.why?`<span class="rec-tag">#${esc(clip(it.why,20))}</span>`:"",`${p.readingTime} min read`,`${fmtNum(p.views)} views`])}</div>
       </div>
     </div>`;
   }).join("")}</div>`;
@@ -2571,13 +2891,10 @@ let listState={posts:[],shown:0,term:""};
 
 function mastheadHtml(count){
   return `<div class="masthead">
-    <h1>Nalar</h1>
-    <p class="mh-sub">Thinking out loud about software. What I build, what breaks, and what I would do differently.</p>
-    <div class="mh-meta">
-      <span id="mhCount">${count?`${count} post${count===1?"":"s"} published`:"&nbsp;"}</span>
-      <span>Written by Rafi Arsya</span>
-      <span>Self hosted in Kuala Lumpur</span>
-    </div>
+    <div class="mh-kicker">Writing to think</div>
+    <h1 class="mh-title">Nalar</h1>
+    <p class="mh-sub">Notes on what I build, what breaks, and what I would do differently, written down so I can think them through.</p>
+    <div class="mh-meta">${metaLine([`<span id="mhCount">${count?`${count} post${count===1?"":"s"}`:"&nbsp;"}</span>`,`By Rafi Arsya`,`<a href="/about" onclick="event.preventDefault();go('/about')">About</a>`])}</div>
   </div>`;
 }
 
@@ -2649,7 +2966,9 @@ async function viewList(searchTerm){
   if(!term){
     try{
       homeTags=await api("/tags",{},ctrl.signal);
-      renderTagCloud(homeTags);
+      // On wide screens the sidebar already lists every topic; the inline
+      // cloud is only worth its space where the sidebar drops below the feed.
+      if(window.matchMedia?.("(max-width:1080px)").matches)renderTagCloud(homeTags);
     }catch{}
   }
   const list=document.getElementById("list");
@@ -2688,8 +3007,10 @@ async function viewList(searchTerm){
       // "Start here" is for people with no history; once the recommendations
       // have something real to say, showing both is just two lists of links.
       if(shSlot)shSlot.innerHTML=recHtml?"":startHereHtml(posts);
-      if(trSlot)trSlot.innerHTML=topRatedHtml(posts,posts[0].slug);
-      if(topicSlot)topicSlot.innerHTML=topicGridHtml(homeTags);
+      // "Most read" and the topic shelves already live in the sidebar rail;
+      // repeating them in the main column only made the page feel crowded.
+      if(trSlot)trSlot.innerHTML="";
+      if(topicSlot)topicSlot.innerHTML="";
       if(note)note.textContent=`${posts.length} post${posts.length===1?"":"s"}`;
       renderPagedList(posts.slice(1),`<div class="empty-icon">✎</div>Nothing else here yet.`);
       mountReveals();
@@ -2749,7 +3070,7 @@ function renderListMore(){
   if(!more)return;
   const left=listState.posts.length-listState.shown;
   more.innerHTML=left>0
-    ?`<div class="show-more"><button type="button" onclick="showMorePosts()">Show ${Math.min(left,LIST_PAGE_SIZE)} more · ${left} left</button></div>`
+    ?`<div class="show-more"><button type="button" onclick="showMorePosts()">Show ${Math.min(left,LIST_PAGE_SIZE)} more <span class="sm-left">${left} left</span></button></div>`
     :(listState.posts.length>LIST_PAGE_SIZE?`<div class="show-more"><button type="button" onclick="collapsePosts()">That's everything, collapse</button></div>`:"");
 }
 function showMorePosts(){
@@ -2794,7 +3115,8 @@ function startHereHtml(posts){
   if(posts.length<3)return "";
   const byDate=posts.slice().sort((a,b)=>new Date(a.publishAt||a.createdAt)-new Date(b.publishAt||b.createdAt));
   const oldest=byDate[0];
-  const popular=posts.slice().sort((a,b)=>b.views-a.views)[0];
+  // posts[0] is already the featured piece at the top of the page
+  const popular=posts.slice(1).sort((a,b)=>b.views-a.views)[0]||posts[0];
   const usedSlugs=new Set([oldest.slug,popular.slug]);
   const usedTags=new Set([...oldest.tags,...popular.tags]);
   const diverse=posts.find(p=>!usedSlugs.has(p.slug)&&p.tags.some(t=>!usedTags.has(t)))
@@ -2823,7 +3145,7 @@ function latestHtml(posts){
     `<div class="latest-item" onclick="go('/p/${jsq(p.slug)}')">
       <div class="li-tag">${p.tags[0]?"#"+esc(clip(p.tags[0],20)):"Post"}</div>
       <div class="li-title">${esc(p.title)}</div>
-      <div class="li-meta">${fmtDate(p.publishAt||p.createdAt)} · ${p.readingTime} min read</div>
+      <div class="li-meta">${metaLine([fmtDate(p.publishAt||p.createdAt),`${p.readingTime} min read`])}</div>
     </div>`
   ).join("")}</div>`;
 }
@@ -2864,20 +3186,21 @@ function topRatedHtml(posts,excludeSlug){
       const thumb=coverOf(p)
         ?`<img class="tr-thumb" src="${esc(coverOf(p))}" alt="" loading="lazy" style="object-position:${coverPosition(p)}"/>`
         :`<div class="tr-thumb" style="display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:600;font-size:24px;color:var(--muted)">${esc((p.title||"?")[0].toUpperCase())}</div>`;
-      return `<div class="tr-card" onclick="go('/p/${jsq(p.slug)}')"><span class="tr-rank">${i+1}</span>${thumb}<div class="tr-body"><div class="tr-title">${esc(p.title)}</div><div class="tr-views">${fmtNum(p.views)} views · ${p.readingTime} min read</div></div></div>`;
+      return `<div class="tr-card" onclick="go('/p/${jsq(p.slug)}')"><span class="tr-rank">${i+1}</span>${thumb}<div class="tr-body"><div class="tr-title">${esc(p.title)}</div><div class="tr-views">${metaLine([`${fmtNum(p.views)} views`,`${p.readingTime} min read`])}</div></div></div>`;
     }).join("")}</div></div>`;
 }
 function heroHtml(p){
   const img=coverOf(p)
-    ?`<img class="hero-img" src="${esc(coverOf(p))}" alt="" loading="lazy" style="object-position:${coverPosition(p)}"/>`
-    :`<div class="hero-img">${esc((p.title||"?")[0].toUpperCase())}</div>`;
+    ?`<div class="hero-media"><img class="hero-img" src="${esc(coverOf(p))}" alt="" fetchpriority="high" decoding="async" style="object-position:${coverPosition(p)}"/></div>`
+    :"";
+  const label=p.pinned?`<span class="label-pin">Pinned</span>`:`<span class="label-pin is-latest">Latest</span>`;
   return `<div class="hero-post${coverOf(p)?"":" no-image"}" onclick="go('/p/${jsq(p.slug)}')">
     ${img}
     <div class="hero-content">
-      <div class="hero-eyebrow">${p.pinned?"Pinned · ":"Featured · "}${p.tags[0]?"#"+esc(clip(p.tags[0],22)):"Latest"}</div>
+      <div class="hero-eyebrow">${label}${p.tags[0]?`<span class="hero-tag" title="${esc(p.tags[0])}">${esc(clip(p.tags[0],22))}</span>`:""}</div>
       <div class="hero-title">${esc(p.title)}</div>
-      <div class="hero-excerpt">${esc(p.subtitle||p.excerpt)}</div>
-      <div class="hero-meta">${fmtDate(p.publishAt||p.createdAt)} · ${p.readingTime} min read · ${p.views} views</div>
+      ${p.subtitle||p.excerpt?`<div class="hero-excerpt">${esc(p.subtitle||p.excerpt)}</div>`:""}
+      <div class="hero-meta">${metaLine([fmtDate(p.publishAt||p.createdAt),`${p.readingTime} min read`,`${fmtNum(p.views)} views`])}</div>
     </div>
   </div>`;
 }
@@ -2886,23 +3209,22 @@ function heroHtml(p){
 // however long the copy runs.
 function cardHtml(p){
   const cover=coverOf(p);
-  const inner=cover
-    ?`<img class="pc-thumb" src="${esc(cover)}" alt="" loading="lazy" style="object-position:${coverPosition(p)}"/>`
-    :`<div class="pc-thumb">${esc((p.title||"?")[0].toUpperCase())}</div>`;
-  // Cover sits in its own frame so the hover overlay has something to cover.
-  const thumb=`<div class="pc-thumb-wrap">${inner}<div class="pc-overlay"><span class="pc-overlay-btn">Read post</span></div></div>`;
-  // The strip under the meta line is the blog's answer to the tech-stack row
-  // on a project card: hidden until hover, then the full tag list.
-  const rest=Array.isArray(p.tags)?p.tags.slice(1):[];
-  const details=`<div class="pc-details"><span class="pc-details-rule"></span>${rest.length?tagChips(rest,5,false):`<span class="tag-more">${esc(fmtDate(p.publishAt||p.createdAt))}</span>`}</div>`;
-  return `<article class="post-card" onclick="go('/p/${jsq(p.slug)}')">
+  const thumb=cover
+    ?`<div class="pc-thumb-wrap"><img class="pc-thumb" src="${esc(cover)}" alt="" loading="lazy" decoding="async" style="object-position:${coverPosition(p)}"/></div>`
+    :"";
+  const kicker=metaLine([
+    p.tags[0]?`<span class="pc-tag" title="${esc(p.tags[0])}">${esc(clip(p.tags[0],18))}</span>`:"",
+    `<time>${fmtDate(p.publishAt||p.createdAt)}</time>`,
+    p.pinned?`<span class="pc-pin">Pinned</span>`:"",
+  ],"pc-kicker");
+  const excerpt=p.subtitle||p.excerpt;
+  return `<article class="post-card${cover?"":" no-thumb"}" onclick="go('/p/${jsq(p.slug)}')">
     <div class="pc-body">
-      <div class="pc-byline"><span class="pc-avatar">R</span><span>Rafi Arsya</span><span style="color:var(--muted)">·</span><span style="color:var(--muted)">${fmtDate(p.publishAt||p.createdAt)}</span>${p.pinned?`<span class="pinned-badge">· Pinned</span>`:""}</div>
+      ${kicker}
       <h3 class="post-title">${esc(p.title)}</h3>
-      <p class="post-excerpt">${esc(p.subtitle||p.excerpt)}</p>
-      <div class="post-meta">${tagChips(p.tags,1)}<span>${p.readingTime} min read</span><span class="pc-views">${fmtNum(p.views)} views</span>${bookmarkBtn(p.slug,p.title)}</div>
+      ${excerpt?`<p class="post-excerpt">${esc(excerpt)}</p>`:""}
+      <div class="post-meta">${metaLine([`${p.readingTime} min read`,`<span class="pc-views">${fmtNum(p.views)} views</span>`])}${bookmarkBtn(p.slug,p.title)}</div>
     </div>
-    ${details}
     ${thumb}
   </article>`;
 }
@@ -2924,7 +3246,7 @@ let sidebarTagsCache=[];
 let sidebarTagsExpanded=false;
 let sidebarArchiveExpanded=false;
 const SIDEBAR_TAGS_PREVIEW=8;
-const SIDEBAR_ARCHIVE_PREVIEW=6;
+const SIDEBAR_ARCHIVE_PREVIEW=4;
 
 function showSidebar(){document.getElementById("pageGrid")?.classList.add("with-sidebar")}
 function hideSidebar(){document.getElementById("pageGrid")?.classList.remove("with-sidebar")}
@@ -2955,7 +3277,6 @@ function renderSidebar(){
     popularWidget(sidebarPostsCache)+
     tagsWidget(sidebarTagsCache)+
     archiveWidget(sidebarPostsCache)+
-    randomWidget()+
     supportWidget();
   tuneStickyRails();
 }
@@ -2984,26 +3305,25 @@ window.addEventListener("resize",()=>{clearTimeout(tuneStickyRails._t);tuneStick
 
 function profileWidget(){
   return `<div class="widget widget-profile">
-    <div class="avatar">R</div>
-    <div class="name">Rafi Arsya</div>
-    <div class="bio">Computer science student in Kuala Lumpur. I write down what I build, what breaks, and what I would do differently.</div>
+    <div class="wp-head"><div class="avatar">R</div><div><div class="name">Rafi Arsya</div><div class="wp-role">Writes Nalar</div></div></div>
+    <div class="bio">CS student at Universiti Malaya. I write to think, mostly about software and the life around it.</div>
     <div class="links">
-      <a href="https://rafiarsya.com" target="_blank" rel="noopener">Portfolio</a>
       <a href="#" onclick="event.preventDefault();go('/about')">About</a>
+      <a href="https://rafiarsya.com" target="_blank" rel="noopener">Portfolio</a>
       <a href="/rss.xml" target="_blank" rel="noopener">RSS</a>
     </div>
   </div>`;
 }
 
 function popularWidget(posts){
-  const top=[...posts].sort((a,b)=>b.views-a.views).slice(0,5);
+  const top=[...posts].sort((a,b)=>b.views-a.views).slice(0,4);
   if(!top.length)return "";
   return `<div class="widget"><div class="widget-title">Most read</div><div class="popular-list">${top.map((p,i)=>
     `<a class="popular-item" onclick="go('/p/${jsq(p.slug)}')">
       <span class="pi-num">${String(i+1).padStart(2,"0")}</span>
       <span class="pi-body">
         <span class="pi-title">${esc(p.title)}</span>
-        <span class="pi-meta">${fmtNum(p.views)} view${p.views===1?"":"s"} · ${p.readingTime} min</span>
+        <span class="pi-meta">${metaLine([`${fmtNum(p.views)} view${p.views===1?"":"s"}`,`${p.readingTime} min`])}</span>
       </span>
     </a>`
   ).join("")}</div></div>`;
@@ -3014,7 +3334,7 @@ function tagsWidget(tags){
   const sorted=tags.slice().sort((a,b)=>b.count-a.count);
   const shown=sidebarTagsExpanded?sorted:sorted.slice(0,SIDEBAR_TAGS_PREVIEW);
   const rest=sorted.length-shown.length;
-  return `<div class="widget"><div class="widget-title">Topics</div><div class="widget-tags">${shown.map(t=>
+  return `<div class="widget widget-topics"><div class="widget-title">Topics</div><div class="widget-tags">${shown.map(t=>
     `<button type="button" title="${esc(t.tag)}" onclick="go('/tag/'+encodeURIComponent('${jsq(t.tag)}'))">#${esc(clip(t.tag,18))}</button>`
   ).join("")}</div>${
     rest>0?`<button class="show-more-inline" onclick="sidebarTagsExpanded=true;renderSidebar()">Show ${rest} more →</button>`
@@ -3038,7 +3358,7 @@ function archiveWidget(posts){
   ).join("")}</ul>${
     rest>0?`<button class="show-more-inline" onclick="sidebarArchiveExpanded=true;renderSidebar()">Show ${rest} more months →</button>`
     :(sidebarArchiveExpanded?`<button class="show-more-inline" onclick="sidebarArchiveExpanded=false;renderSidebar()">Show fewer</button>`:"")
-  }<button class="show-more-inline" style="display:block" onclick="go('/archive')">Open the full archive →</button></div>`;
+  }<div class="widget-actions"><button class="show-more-inline" onclick="go('/archive')">Full archive →</button><button class="show-more-inline" onclick="jumpRandomPost(this)"><span class="dice">↻</span> Random post</button></div></div>`;
 }
 
 function randomWidget(){
@@ -3060,8 +3380,8 @@ function jumpRandomPost(btn){
 function supportWidget(){
   return `<div class="widget widget-support">
     <div class="widget-title">Enjoyed a post?</div>
-    <p style="font-size:13.5px;color:var(--ink-2);line-height:1.55;margin-bottom:12px">Nalar runs off a mini PC in my room. No ads, no paywall. A tip is optional and always appreciated.</p>
-    <button class="btn small" style="width:100%" onclick="openSupportModal()">☕ Support this blog</button>
+    <p>No ads and no paywall. If something here helped, a small tip keeps it going.</p>
+    <button class="btn small" style="width:100%" onclick="openSupportModal()">Support Nalar</button>
   </div>`;
 }
 
@@ -3122,7 +3442,7 @@ function viewNow(){
       <p>Computer Science (Software Engineering) at Universiti Malaya, heading into my third semester in October. Most of my time outside class goes into the course plan for the semesters ahead and into whatever I am building at the moment.</p>
 
       <h2>Building</h2>
-      <p>Nalar, the thing you are reading. It is a hand rolled CMS: Node, Express and PostgreSQL, running on a mini PC in my room, reachable through a Cloudflare Tunnel. Every feature here exists because I wanted to know how it works, not because a template shipped with it.</p>
+      <p>Nalar, the thing you are reading. It is a CMS I wrote by hand with Node, Express and PostgreSQL. Every feature here exists because I wanted to know how it works, not because a template shipped with it.</p>
       <p>My portfolio at <a href="https://rafiarsya.com" target="_blank" rel="noopener">rafiarsya.com</a> gets steady small improvements, and there is usually one client or campus site in progress alongside it.</p>
 
       <h2>Volunteering</h2>
@@ -3138,35 +3458,37 @@ function viewNow(){
   hideSidebar();
 }
 function viewAbout(){
-  app.innerHTML=`
-    <img class="page-photo" src="/img/mood/mood-desk.jpg" alt="" loading="lazy" onerror="this.remove()"/>
-    <div class="about-hero">
-      <div class="ah-avatar">R</div>
-      <div>
-        <div class="ah-role">Software engineering student · Builder</div>
-        <h1>Rafi Arsya</h1>
-      </div>
-    </div>
+  app.innerHTML=`<article class="about">
+    <header class="about-head">
+      <div class="eyebrow">About</div>
+      <h1 class="about-title">I write to find out what I think.</h1>
+      <p class="about-lede">Hi, I'm Rafi. Nalar is where I think things through, in public and in writing.</p>
+    </header>
+    <figure class="about-figure">
+      <img src="/img/mood/mood-journal.jpg" alt="An open notebook on a desk" loading="lazy" decoding="async" onerror="this.parentNode.remove()"/>
+    </figure>
     <div class="about-body">
-      <p>Hi, I'm Rafi. I'm a Computer Science student at Universiti Malaya, originally from Indonesia, and I have been building things for the web since grade 10, back when learning it meant YouTube, a stack of books and a very patient tutor.</p>
-      <p><strong>Nalar is my engineering notebook, made public.</strong> Everything here is written from the trenches: things I shipped, servers I broke, and the occasional 2AM debugging session that turned into a lesson worth writing down. I would rather publish the messy version that is true than the clean version that is not.</p>
-      <p>The blog is part of the story too. It is a CMS I wrote by hand, running on a Dell OptiPlex Micro in my room, exposed through a Cloudflare Tunnel. No Medium, no Substack, no managed anything. When it goes down, that is on me, and honestly that is half the fun.</p>
-      <p>Away from this site I build web apps, poke at machine learning, and maintain a healthy graveyard of side projects. A few of them survived long enough to reach my portfolio.</p>
+      <p>By day I study computer science at Universiti Malaya, a long way from home in Indonesia. I build things for the web, and I have noticed that most of what I really understand about them, I only understood after I had to write it down.</p>
+      <p><em>Nalar</em> is Indonesian for reason, the habit of thinking something all the way through. That is what this place is for. A half formed idea becomes a draft, the draft gets questioned, and whatever survives ends up here.</p>
+      <p>I would rather publish the honest version than the polished one. If something here is wrong, tell me. That is usually how the next post starts.</p>
     </div>
-    <div class="about-stack">
-      <span>JavaScript</span><span>TypeScript</span><span>React</span><span>Next.js</span><span>Node.js</span><span>Express</span><span>PostgreSQL</span><span>Tailwind</span><span>Docker</span><span>Linux</span><span>Python</span>
-    </div>
-    <div class="about-body" style="margin-top:8px">
-      <p style="font-family:var(--font-mono);font-size:13px;color:var(--muted);line-height:1.7">
-        Currently open to a software engineering internship from around October 2026.<br/>
-        Best way to reach me is through the contact form on my portfolio.
-      </p>
-    </div>
+    <section class="about-shelves" aria-label="What you will find here">
+      <div class="about-shelf"><div class="as-num">01</div><div class="as-title">Building</div><p>Notes from projects: the decisions, the bugs inside them, and what I would change.</p></div>
+      <div class="about-shelf"><div class="as-num">02</div><div class="as-title">Thinking</div><p>Essays that start as a question I could not answer yet.</p></div>
+      <div class="about-shelf"><div class="as-num">03</div><div class="as-title">Living</div><p>Studying abroad, working with people, and learning slowly.</p></div>
+    </section>
     <div class="about-cta">
-      <a class="btn" href="https://rafiarsya.com" target="_blank" rel="noopener" style="text-decoration:none">Visit my portfolio →</a>
-      <button class="btn ghost" onclick="openSubModal()">Subscribe to updates</button>
-      <button class="btn ghost" onclick="go('/now')">What I'm doing now</button>
-    </div>`;
+      <button class="btn" onclick="go('/')">Start reading</button>
+      <button class="btn ghost" onclick="openSubModal()">Get new posts by email</button>
+    </div>
+    <div class="about-elsewhere">
+      <span class="ae-label">Elsewhere</span>
+      <a href="https://rafiarsya.com" target="_blank" rel="noopener">Portfolio</a>
+      <a href="https://github.com/rafiarsya07" target="_blank" rel="noopener">GitHub</a>
+      <a href="/now" onclick="event.preventDefault();go('/now')">Now</a>
+      <a href="/rss.xml" target="_blank" rel="noopener">RSS</a>
+    </div>
+  </article>`;
   hideSidebar();
 }
 
@@ -3265,7 +3587,7 @@ async function viewBookmarks(){
 }
 function clearBookmarks(){
   if(!confirm("Remove all saved posts from your reading list?"))return;
-  localStorage.removeItem("tl_bookmarks");
+  localStorage.removeItem("nalar_bookmarks");
   renderNav();
   viewBookmarks();
 }
@@ -3378,7 +3700,7 @@ function commentNode(slug,c,{admin}){
   const stars=c.rating?`<span class="rating-stars">${ratingStars(c.rating)}</span>`:"";
   const badge=c.isAdmin?`<span class="comment-badge">Author</span>`:"";
   const pinnedBadge=c.pinned?`<span class="pinned-badge">📌 Pinned</span>`:"";
-  const edited=c.updatedAt&&c.updatedAt>c.createdAt+1500?`<span class="comment-edited">· edited</span>`:"";
+  const edited=c.updatedAt&&c.updatedAt>c.createdAt+1500?`<span class="comment-edited">edited</span>`:"";
   const actions=[];
   if(canReply)actions.push(`<button onclick="openReply('${slug}',${c.id})">Reply</button>`);
   if(canPin)actions.push(`<button onclick="togglePinComment(${c.id})">${c.pinned?"Unpin":"Pin"}</button>`);
@@ -3540,7 +3862,7 @@ async function submitEdit(id){
     // add an "edited" marker if not already there
     const head=document.querySelector("#comment-"+id+" .comment-head");
     if(head&&!head.querySelector(".comment-edited")){
-      head.insertAdjacentHTML("beforeend",`<span class="comment-edited">· edited</span>`);
+      head.insertAdjacentHTML("beforeend",`<span class="comment-edited">edited</span>`);
     }
     closeInline("reply-slot-"+id);
     showToast("Comment updated");
@@ -3695,16 +4017,29 @@ bindBackToTop(); // global: visible on every page once scrolled, not just posts
 //  2. run highlight.js over code blocks (monochrome theme via CSS)
 //  3. make images open in the lightbox
 // Called once after the post HTML is inserted into the DOM.
+// highlight.js is only fetched the first time a page actually contains code,
+// so readers of plain essays never download it.
+let hljsPromise=null;
+function loadHljs(){
+  if(window.hljs)return Promise.resolve(window.hljs);
+  if(!hljsPromise)hljsPromise=new Promise((res,rej)=>{
+    const sc=document.createElement("script");
+    sc.src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js";
+    sc.async=true;sc.onload=()=>res(window.hljs);sc.onerror=()=>{hljsPromise=null;rej()};
+    document.head.appendChild(sc);
+  });
+  return hljsPromise;
+}
 function enhancePostBody(bodyEl){
   // --- code blocks ---
-  bodyEl.querySelectorAll("pre > code").forEach((code)=>{
+  const codeEls=bodyEl.querySelectorAll("pre > code");
+  if(codeEls.length)loadHljs().then(h=>codeEls.forEach(c=>{try{if(document.body.contains(c))h.highlightElement(c)}catch{}})).catch(()=>{});
+  codeEls.forEach((code)=>{
     const pre=code.parentElement;
     if(pre.parentElement.classList.contains("code-wrap"))return; // already done
     // detect language from the "language-xxx" class marked.js adds
     let lang="";
     code.classList.forEach(c=>{if(c.startsWith("language-"))lang=c.slice(9)});
-    // syntax highlight if the library loaded
-    try{if(window.hljs){lang?hljs.highlightElement(code):hljs.highlightElement(code)}}catch{}
     const wrap=document.createElement("div");
     wrap.className="code-wrap has-head";
     const head=document.createElement("div");
@@ -3801,7 +4136,7 @@ async function viewPost(slug){
     setLastRead(p.slug,p.title);
     setDocTitle(p.title);
     const crumbs=`<nav class="crumbs"><a onclick="go('/')">Home</a><span class="sep">/</span>${p.tags[0]?`<a onclick="go('/tag/'+encodeURIComponent('${jsq(p.tags[0])}'))">#${esc(clip(p.tags[0],20))}</a><span class="sep">/</span>`:""}<span class="here">${esc(p.title)}</span></nav>`;
-    const byline=`<div class="byline"><div class="bl-avatar">R</div><div><div class="bl-name">Rafi Arsya</div><div class="bl-sub">${fmtDate(p.publishAt||p.createdAt)} · ${p.readingTime} min read · ${fmtNum(p.views)} views</div></div><button class="btn ghost small bl-follow" onclick="openSubModal()">Subscribe</button></div>`;
+    const byline=`<div class="byline"><div class="bl-avatar">R</div><div><div class="bl-name">Rafi Arsya</div><div class="bl-sub">${metaLine([fmtDate(p.publishAt||p.createdAt),`${p.readingTime} min read`,`${fmtNum(p.views)} views`])}</div></div><button class="btn ghost small bl-follow" onclick="openSubModal()">Subscribe</button></div>`;
     app.innerHTML=`${crumbs}<article class="post">
       <div class="post-meta">${p.pinned?`<span class="pinned-badge">Pinned</span>`:""}${tagChips(p.tags,3)}${me?`<button class="btn ghost small" style="margin-left:auto" onclick="togglePostPin(${p.id})">${p.pinned?"Unpin":"Pin this post"}</button>`:""}</div>
       <div style="display:flex;align-items:flex-start;gap:10px;margin-top:14px"><h1 class="post-title" style="flex:1">${esc(p.title)}</h1><span style="margin-top:8px">${bookmarkBtn(p.slug,p.title,true)}</span></div>
@@ -4154,7 +4489,7 @@ async function viewAdmin(){
     return;
   }
   const topHtml=top.length
-    ?top.map((p,i)=>`<div class="admin-post-row"><div><div class="t"><span class="mono" style="color:var(--muted);font-size:13px;margin-right:6px">#${i+1}</span>${esc(p.title)}</div><div class="s">${fmtNum(p.views)} views · ${fmtNum(p.commentCount)} comment${p.commentCount===1?"":"s"}</div></div><button class="btn ghost small" onclick="go('/p/${p.slug}')">View</button></div>`).join("")
+    ?top.map((p,i)=>`<div class="admin-post-row"><div><div class="t"><span class="mono" style="color:var(--muted);font-size:13px;margin-right:6px">#${i+1}</span>${esc(p.title)}</div><div class="s">${metaLine([`${fmtNum(p.views)} views`,`${fmtNum(p.commentCount)} comment${p.commentCount===1?"":"s"}`])}</div></div><button class="btn ghost small" onclick="go('/p/${p.slug}')">View</button></div>`).join("")
     :`<div class="empty" style="padding:24px 0">No published posts yet</div>`;
   // Stat cards that map onto a post status double as filters for the list
   // below; the rest are plain read-only figures.
@@ -4173,7 +4508,7 @@ async function viewAdmin(){
     <div>
       <div class="eyebrow">Signed in as ${esc(me.username||"admin")}</div>
       <h1>Dashboard</h1>
-      <div class="dash-sub">${fmtNum(stats.total)} posts · ${fmtNum(stats.total_views)} views · ${fmtNum(stats.total_comments)} comments</div>
+      <div class="dash-sub">${metaLine([`${fmtNum(stats.total)} posts`,`${fmtNum(stats.total_views)} views`,`${fmtNum(stats.total_comments)} comments`])}</div>
     </div>
     <div class="dash-actions">
       <button class="btn ghost small" onclick="go('/')">View site</button>
@@ -4182,7 +4517,7 @@ async function viewAdmin(){
   </div>
 
   <div class="stat-group">
-    <div class="stat-group-label">Content · tap to filter the list below</div>
+    <div class="stat-group-label">Content <span style="text-transform:none;letter-spacing:0;font-weight:400">(tap to filter the list below)</span></div>
     <div class="stats-row">
       ${statCard(stats.total,"Total","all")}
       ${statCard(stats.published,"Published","published")}
@@ -4316,17 +4651,17 @@ function renderAdminList(posts){
   // prune selections that are no longer visible
   adminSelected.forEach(id=>{if(!shown.some(p=>p.id===id))adminSelected.delete(id)});
   const countEl=document.getElementById("listCount");
-  if(countEl)countEl.textContent=`${fmtNum(shown.length)} of ${fmtNum(adminPosts.length)} post${adminPosts.length===1?"":"s"}${adminFilter==="all"?"":" · "+adminFilter}${adminHealth?` · ${HEALTH_TESTS[adminHealth].label.toLowerCase()}`:""}${adminQuery?` · matching “${adminQuery}”`:""}`;
+  if(countEl)countEl.textContent=`${fmtNum(shown.length)} of ${fmtNum(adminPosts.length)} post${adminPosts.length===1?"":"s"}${adminFilter==="all"?"":", "+adminFilter}${adminHealth?`, ${HEALTH_TESTS[adminHealth].label.toLowerCase()}`:""}${adminQuery?`, matching “${adminQuery}”`:""}`;
   if(!shown.length){
     el.innerHTML=`<div class="empty" style="padding:40px 0"><div class="empty-icon">⌕</div>no posts match this filter</div>`;
     updateBulkBar();syncSelectAllBox(0);return;
   }
   el.innerHTML=shown.map(p=>{
-    let sched=p.status==="scheduled"&&p.publishAt?` · publishes ${fmtDateTime(p.publishAt)}`:"";
+    let sched=p.status==="scheduled"&&p.publishAt?`publishes ${fmtDateTime(p.publishAt)}`:"";
     const checked=adminSelected.has(p.id)?"checked":"";
     return `<div class="admin-post-row${adminSelected.has(p.id)?" selected":""}" data-id="${p.id}">
       <span class="row-check"><input type="checkbox" ${checked} onchange="toggleSelect(${p.id},this.checked)" aria-label="Select post"/></span>
-      <div style="flex:1;min-width:0"><div class="t">${p.pinned?`<span class="pin-badge" title="Pinned">📌</span>`:""}${esc(p.title)} <span class="badge ${p.status}">${p.status}</span></div><div class="s">/${esc(p.slug)} · ${fmtNum(p.views)} views${sched}</div></div>
+      <div style="flex:1;min-width:0"><div class="t">${p.pinned?`<span class="pin-badge" title="Pinned">📌</span>`:""}${esc(p.title)} <span class="badge ${p.status}">${p.status}</span></div><div class="s">${metaLine([`/${esc(p.slug)}`,`${fmtNum(p.views)} views`,sched])}</div></div>
       <div class="btn-group"><button class="btn ghost small${p.pinned?" active-pin":""}" onclick="togglePostPin(${p.id})" title="${p.pinned?"Unpin":"Pin to top"}">📌 ${p.pinned?"Unpin":"Pin"}</button><button class="btn ghost small" onclick="go('/edit/${p.id}')">Edit</button><button class="btn ghost small" onclick="duplicatePost(${p.id})">Duplicate</button><button class="btn ghost small" onclick="go('/p/${p.slug}')">View</button><button class="btn danger small" onclick="delPost(${p.id})">Delete</button></div>
     </div>`;
   }).join("");
@@ -4674,7 +5009,7 @@ async function viewEditor(editId){
 
   // --- autosave to localStorage (per draft key), debounced. This is a local
   //     safety net for unsaved work, separate from the server "Save draft".
-  const draftKey="tl_draft_"+(editId||"new");
+  const draftKey="nalar_draft_"+(editId||"new");
   const statusEl=document.getElementById("autosaveStatus");
   let autosaveTimer;
   function snapshot(){return JSON.stringify({title:titleEl.value,subtitle:subtitleEl.value,tags:tagsEl.value,body:bodyEl.value,cover:pendingCoverUrl,series:seriesEl.value,seriesOrder:seriesOrderEl.value,at:Date.now()})}
@@ -4682,7 +5017,7 @@ async function viewEditor(editId){
     try{
       localStorage.setItem(draftKey,snapshot());
       statusEl.className="autosave saved";
-      statusEl.innerHTML=`<span class="dot"></span>Saved locally · ${new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}`;
+      statusEl.innerHTML=`<span class="dot"></span>Saved locally at ${new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}`;
     }catch{}
   }
   function scheduleAutosave(){
@@ -4815,9 +5150,9 @@ function renderCoverArea(){
     const ratio=rm?rm[1]:"standard";
     el.innerHTML=`
       <div class="cover-ratio-picker">
-        <button type="button" class="${ratio==="wide"?"on":""}" onclick="setCoverRatio('wide')">Wide · 21:9</button>
-        <button type="button" class="${ratio==="standard"?"on":""}" onclick="setCoverRatio('standard')">Standard · 16:9</button>
-        <button type="button" class="${ratio==="tall"?"on":""}" onclick="setCoverRatio('tall')">Tall · 4:3</button>
+        <button type="button" class="${ratio==="wide"?"on":""}" onclick="setCoverRatio('wide')">Wide <span class="ratio-n">21:9</span></button>
+        <button type="button" class="${ratio==="standard"?"on":""}" onclick="setCoverRatio('standard')">Standard <span class="ratio-n">16:9</span></button>
+        <button type="button" class="${ratio==="tall"?"on":""}" onclick="setCoverRatio('tall')">Tall <span class="ratio-n">4:3</span></button>
       </div>
       <div class="cover-preview-wrap${ratio!=="standard"?" ratio-"+ratio:""}" id="coverFocalArea" title="Click anywhere to set the focal point, the part of the image that stays visible when it's cropped">
       <img src="${esc(pendingCoverUrl)}" alt="" style="object-position:${posX}% ${posY}%"/>
@@ -4837,7 +5172,7 @@ function renderCoverArea(){
     el.innerHTML=`
       <label class="cover-drop" id="coverDrop">
         <input type="file" id="coverInput" accept="image/png,image/jpeg,image/webp,image/gif"/>
-        <div class="hint">${ICONS.image}<br/><b>Click to upload</b> or drag an image here<br/>JPEG, PNG, WEBP or GIF · up to 5MB</div>
+        <div class="hint">${ICONS.image}<br/><b>Click to upload</b> or drag an image here<br/>JPEG, PNG, WEBP or GIF, up to 5MB</div>
         <div class="upload-progress" id="coverProgress"><div class="bar" id="coverBar"></div></div>
       </label>`;
     const drop=document.getElementById("coverDrop"),input=document.getElementById("coverInput");
@@ -4996,10 +5331,10 @@ const READER_DEFAULTS={fs:"m",width:"normal",font:"serif"};
 const FS_MAP={s:0.9,m:1,l:1.15};
 const WIDTH_MAP={narrow:"620px",normal:"760px",wide:"900px"};
 function getReaderPrefs(){
-  try{return {...READER_DEFAULTS,...JSON.parse(localStorage.getItem("tl_reader")||"{}")}}
+  try{return {...READER_DEFAULTS,...JSON.parse(localStorage.getItem("nalar_reader")||"{}")}}
   catch{return {...READER_DEFAULTS}}
 }
-function saveReaderPrefs(p){localStorage.setItem("tl_reader",JSON.stringify(p))}
+function saveReaderPrefs(p){localStorage.setItem("nalar_reader",JSON.stringify(p))}
 function applyReaderPrefs(){
   const p=getReaderPrefs();
   document.documentElement.style.setProperty("--reader-fs",FS_MAP[p.fs]??1);
